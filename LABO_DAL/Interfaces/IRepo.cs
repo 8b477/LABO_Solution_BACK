@@ -10,10 +10,10 @@ namespace LABO_DAL.Interfaces
 {
     public interface IUserRepo
     {
-        IEnumerable<UserModel> Get();
-        UserModel GetById(int id);
-        void Create(UserModel item);
+        IEnumerable<UseDTO> Get();
+        UseDTO GetById(int id);
+        void Create(UseDTO item);
         bool Delete(int id);
-        void Update(UserModel item);
+        void Update(UseDTO item);
     }
 }

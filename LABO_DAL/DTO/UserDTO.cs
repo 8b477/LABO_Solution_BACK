@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LABO_DAL.Models
 {
-    public class UserModel
+    public class UserDTO
     {
         public int IDUtilisateur { get; set; }
         public string Nom { get; set; }
@@ -15,7 +15,7 @@ namespace LABO_DAL.Models
         public string MotDePasse { get; set; }
     }
 
-    public class UserCreateModel
+    public class UserDTOCreateModel
     {
         //public int IDUtilisateur { get; set; }
         public string Nom { get; set; }

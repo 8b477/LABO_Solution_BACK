@@ -17,17 +17,17 @@ namespace LABO_DAL.Repositories
             _connection = connection;
         }
 
-        public IEnumerable<UserModel> Get()
+        public IEnumerable<UserDTO> Get()
         {
-            return _connection.Query<UserModel>("SELECT * FROM Utilisateur");
+            return _connection.Query<UserDTO>("SELECT * FROM Utilisateur");
         }
 
-        public UserModel? GetById(int id)
+        public UserDTO? GetById(int id)
         {
-            return _connection.QuerySingleOrDefault<UserModel>("SELECT * FROM Utilisateur WHERE IDUtilisateur = @Id", new { Id = id });
+            return _connection.QuerySingleOrDefault<UserDTO>("SELECT * FROM Utilisateur WHERE IDUtilisateur = @Id", new { Id = id });
         }
 
-        public int Create(UserCreateModel model)
+        public int Create(UserDTOCreateModel model)
         {
             string query = "INSERT INTO Utilisateur (Nom, Prenom, Email, MotDePasse) " +
                            "VALUES (@Nom, @Prenom, @Email, @MotDePasse)";
@@ -45,7 +45,7 @@ namespace LABO_DAL.Repositories
         }
 
 
-        public UserCreateModel? Update(int userId, UserCreateModel model)
+        public UserDTOCreateModel? Update(int userId, UserDTOCreateModel model)
         {
             string query = "UPDATE Utilisateur " +
                            "SET Nom = @Nom, Prenom = @Prenom, Email = @Email, MotDePasse = @MotDePasse " +
