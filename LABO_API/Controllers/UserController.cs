@@ -1,9 +1,10 @@
-﻿using LABO_DAL.Models;
+﻿using LABO_DAL.DTO;
+
 using LABO_DAL.Repositories;
 
 using Microsoft.AspNetCore.Mvc;
 
-using System.Data.SqlClient;
+
 
 
 namespace LABO_API.Controllers
@@ -58,7 +59,7 @@ namespace LABO_API.Controllers
 
         // POST api/<UserController>
         [HttpPost]
-        public IActionResult Post([FromBody] UserCreateModel model)
+        public IActionResult Post([FromBody] UserDTOCreateModel model)
         {
             int result =_UserRepo.Create(model);
 
@@ -91,7 +92,7 @@ namespace LABO_API.Controllers
 
         // PUT api/<UserController>/5
         [HttpPut("{id:int}")]
-        public IActionResult Put([FromRoute] int id, [FromBody] UserCreateModel model)
+        public IActionResult Put([FromRoute] int id, [FromBody] UserDTOCreateModel model)
         {
             var result = _UserRepo.Update(id, model);
 

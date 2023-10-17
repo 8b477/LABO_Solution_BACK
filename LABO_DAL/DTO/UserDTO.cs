@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LABO_DAL.Models
+namespace LABO_DAL.DTO
 {
     public class UserDTO
     {

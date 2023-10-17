@@ -1,6 +1,6 @@
 ﻿using Dapper;
 
-using LABO_DAL.Models;
+using LABO_DAL.DTO;
 
 
 using System.Data;
