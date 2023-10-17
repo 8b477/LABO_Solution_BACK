@@ -1,9 +1,8 @@
 ﻿using Dapper;
 using LABO_DAL.DTO;
 using LABO_Entities;
-using Microsoft.Extensions.Configuration;
 using System.Data;
-using System.Data.SqlClient;
+
 
 namespace LABO_DAL.Repositories
 {
@@ -70,8 +69,7 @@ namespace LABO_DAL.Repositories
 
                 UserDTO? result = _connection.QuerySingleOrDefault<UserDTO>(query, new { Email = email, MotDePasse = motDePasse });
 
-                return result is null ? false : true;
-            
+                return result is null ? false : true;           
         }
     }
 }

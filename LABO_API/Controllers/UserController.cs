@@ -1,9 +1,6 @@
 ﻿using LABO_DAL.DTO;
-
 using LABO_DAL.Repositories;
-
 using LABO_Tools.Token;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
    namespace LABO_API.Controllers
     {
         [Route("api/[controller]")]
+        [Authorize("RequireToken")]
         [ApiController]
         public class UserController : ControllerBase
         {
@@ -36,6 +34,7 @@ using Microsoft.AspNetCore.Mvc;
             /// </summary>
             /// <returns>La liste des utilisateurs.</returns>
             [HttpGet]
+            [AllowAnonymous]
             [ProducesResponseType(StatusCodes.Status200OK)]
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
@@ -77,7 +76,7 @@ using Microsoft.AspNetCore.Mvc;
             /// </summary>
             /// <param name="model">Modèle UserDTOCreate contenant les informations de l'utilisateur à créer.</param>
             /// <returns>Le modèle de l'utilisateur créé.</returns>
-            [HttpPost]
+            [HttpPost]                  // --------------> TODO ADD CONTRAINTE EMAIL UNIQUE !!
             [AllowAnonymous]
             [ProducesResponseType(StatusCodes.Status201Created)]
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -143,15 +142,15 @@ using Microsoft.AspNetCore.Mvc;
 
 
 
-        [AllowAnonymous]
-        [HttpPost("Log")]
-        public IActionResult Get(UserDTORegister user)
-        {
+            [AllowAnonymous]
+            [HttpPost("Log")]
+            public IActionResult Get(UserDTORegister user)
+            {
 
-            if (_UserRepo.GetById(user.Email, user.MotDePasse))
-                return new ObjectResult(GenerateTokenHandler.GenerateToken(user.Email));
+                if (_UserRepo.GetById(user.Email, user.MotDePasse))
+                    return new ObjectResult(GenerateTokenHandler.GenerateToken(user.Email));
 
-            return BadRequest();
-        }
+                return BadRequest();
+            }
     }
 }

@@ -20,7 +20,7 @@ namespace LABO_Tools.Middleware
 
             if (!isPublicEndpoint)
             {
-                context.Request.Headers["Authorization"] = "Bearer"; // Ajoutez le jeton ici
+                context.Request.Headers["Authorize"] = "RequireToken"; // Ajoutez le jeton ici
             }
 
             await _next(context);

@@ -20,8 +20,8 @@ namespace LABO_Tools.Services
                                 ValidateLifetime = true,
                                 ValidateIssuerSigningKey = true,
                                 IssuerSigningKey = TokenHelper.SIGNING_KEY,
-                                ValidIssuer = "votre_émetteur",
-                                ValidAudience = "votre_audience"
+                                ValidIssuer = "http://localhost",
+                                ValidAudience = "http://localhost"
                             };
                         });
         }

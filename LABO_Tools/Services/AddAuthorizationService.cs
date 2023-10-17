@@ -14,6 +14,7 @@ namespace LABO_Tools.Services
                 {
                     policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
                     policy.RequireAuthenticatedUser();
+                    policy.RequireAssertion(context => true); // Autorise toutes les requêtes
                 });
             });
         }
