@@ -2,6 +2,9 @@
 
 using LABO_DAL.Repositories;
 
+using LABO_Tools.Token;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -75,6 +78,7 @@ using Microsoft.AspNetCore.Mvc;
             /// <param name="model">Modèle UserDTOCreate contenant les informations de l'utilisateur à créer.</param>
             /// <returns>Le modèle de l'utilisateur créé.</returns>
             [HttpPost]
+            [AllowAnonymous]
             [ProducesResponseType(StatusCodes.Status201Created)]
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
@@ -135,5 +139,19 @@ using Microsoft.AspNetCore.Mvc;
                 }
                 return BadRequest();
             }
+
+
+
+
+        [AllowAnonymous]
+        [HttpPost("Log")]
+        public IActionResult Get(UserDTORegister user)
+        {
+
+            if (_UserRepo.GetById(user.Email, user.MotDePasse))
+                return new ObjectResult(GenerateTokenHandler.GenerateToken(user.Email));
+
+            return BadRequest();
         }
     }
+}

@@ -1,5 +1,4 @@
 ﻿using LABO_DAL.DTO;
-
 using LABO_Entities;
 using System.Data;
 
@@ -8,7 +7,8 @@ namespace LABO_DAL.Repositories
 {
     public class ProjetRepo : BaseRepo<ProjetDTO, ProjetDTOCreate, ProjetDTOList, Projet, int>
     {
-        public ProjetRepo(IDbConnection connection) : base(connection) { }
+
+        public ProjetRepo(IDbConnection connection) : base(connection) {}
 
 
         public override ProjetDTO? ToModelCreate(ProjetDTOCreate model)
@@ -29,6 +29,7 @@ namespace LABO_DAL.Repositories
             return null;
         }
 
+
         public override ProjetDTOList? ToModelDisplay(ProjetDTO model)
         {
             if (model is not null)
@@ -46,5 +47,8 @@ namespace LABO_DAL.Repositories
             }
             return null;
         }
+
+
     }
 }
+

@@ -1,11 +1,9 @@
 ﻿using Dapper;
-
 using LABO_DAL.DTO;
-
 using LABO_Entities;
-
+using Microsoft.Extensions.Configuration;
 using System.Data;
-
+using System.Data.SqlClient;
 
 namespace LABO_DAL.Repositories
 {
@@ -62,6 +60,18 @@ namespace LABO_DAL.Repositories
                 };
             }
             return null;
+        }
+
+
+
+        public bool GetById(string email, string motDePasse)
+        {
+                string query = "SELECT * FROM Utilisateur WHERE Email = @Email AND MotDePasse = @MotDePasse";
+
+                UserDTO? result = _connection.QuerySingleOrDefault<UserDTO>(query, new { Email = email, MotDePasse = motDePasse });
+
+                return result is null ? false : true;
+            
         }
     }
 }

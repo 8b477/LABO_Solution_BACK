@@ -21,7 +21,7 @@ namespace LABO_DAL.Repositories
         #region Constructor
 
         #region Fields
-        private readonly IDbConnection _connection;
+        protected readonly IDbConnection _connection;
         #endregion
 
         /// <summary>
