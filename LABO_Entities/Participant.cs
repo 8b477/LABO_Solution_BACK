@@ -6,6 +6,6 @@ namespace LABO_Entities
     {
         public int IDUtilisateur { get; set; } // --> FK
         public int IDContrepartie { get; set; } // --> FK
-        public DateOnly DateParticipation { get; set; }
+        public DateTime DateParticipation { get; set; }
     }
 }

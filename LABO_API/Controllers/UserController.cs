@@ -40,10 +40,8 @@ using Microsoft.AspNetCore.Mvc;
             {
                 var result = _UserRepo.Get();
 
-                if (result is not null)
-                {
-                    return Ok(result);
-                }
+                if (result is not null) return Ok(result);
+
                 return BadRequest();
             }
 
@@ -63,10 +61,8 @@ using Microsoft.AspNetCore.Mvc;
             {
                 var result = _UserRepo.GetById(id);
 
-                if (result is not null)
-                {
-                    return Ok(result);
-                }
+                if (result is not null) return Ok(result);
+  
                 return NotFound();
             }
 
@@ -88,10 +84,7 @@ using Microsoft.AspNetCore.Mvc;
 
                 if (user is not null)
                 {
-                    if (_UserRepo.Create(user))
-                    {
-                        return CreatedAtAction(nameof(Post), model);
-                    }
+                    if (_UserRepo.Create(user)) return CreatedAtAction(nameof(Post), model);
                 }
                 return BadRequest();
             }
@@ -112,10 +105,8 @@ using Microsoft.AspNetCore.Mvc;
             {
                 bool result = _UserRepo.Delete(id);
 
-                if (result)
-                {
-                    return NoContent();
-                }
+                if (result) return NoContent();
+
                 return BadRequest();
             }
 
@@ -140,8 +131,7 @@ using Microsoft.AspNetCore.Mvc;
                 {
                     var result = _UserRepo.Update(id, user);
 
-                    if (result is not null)
-                        return Ok(model);
+                    if (result is not null) return Ok(model);
                 }
                 return BadRequest();
             }

@@ -20,6 +20,7 @@ string connectionString = builder.Configuration.GetConnectionString("Dev");
 
 // Ajouter UserRepo comme service et injecter la connexion
 builder.Services.AddScoped<UserRepo>(provider => new UserRepo(new SqlConnection(connectionString)));
+builder.Services.AddScoped<ProjetRepo>(provider => new ProjetRepo(new SqlConnection(connectionString)));
 
 
 
