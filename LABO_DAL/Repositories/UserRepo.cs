@@ -65,6 +65,12 @@ namespace LABO_DAL.Repositories
 
 
 
+        /// <summary>
+        /// Vérifie si le mot de passe en clair correspond au mot de passe haché en base de données pour un utilisateur donné.
+        /// </summary>
+        /// <param name="email">L'adresse e-mail de l'utilisateur.</param>
+        /// <param name="motDePasse">Le mot de passe en clair à vérifier.</param>
+        /// <returns>True si le mot de passe est valide, sinon False.</returns>
         public bool GetById(string email, string motDePasse)
         {
             string query = "SELECT MotDePasse FROM Utilisateur WHERE Email = @Email";
