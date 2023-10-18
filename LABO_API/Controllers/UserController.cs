@@ -34,7 +34,7 @@ namespace LABO_API.Controllers
         /// Récupère la liste des utilisateurs.
         /// </summary>
         /// <returns>La liste des utilisateurs.</returns>
-        [HttpGet]
+            [HttpGet]
             [AllowAnonymous]
             [ProducesResponseType(StatusCodes.Status200OK)]
             [ProducesResponseType(StatusCodes.Status400BadRequest)]

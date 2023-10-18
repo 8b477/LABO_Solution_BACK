@@ -1,12 +1,5 @@
 using LABO_Tools.Middleware;
 using LABO_Tools.Services;
-using LABO_Tools.Token;
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LABO_DAL", "LABO_DAL\LABO_D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LABO_Entities", "LABO_Entities\LABO_Entities.csproj", "{2B2BECA0-FE44-4F65-A5A6-95012217D01B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LABO_Tools", "LABO_Tools\LABO_Tools.csproj", "{DA30A985-C214-4D3B-AF53-F7BBFEA4F35D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LABO_Tools", "LABO_Tools\LABO_Tools.csproj", "{DA30A985-C214-4D3B-AF53-F7BBFEA4F35D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

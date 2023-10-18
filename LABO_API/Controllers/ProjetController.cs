@@ -1,6 +1,7 @@
 ﻿using LABO_DAL.DTO;
 using LABO_DAL.Repositories;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LABO_API.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize("RequireToken")]
     [ApiController]
     public class ProjetController : ControllerBase
     {
