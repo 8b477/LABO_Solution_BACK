@@ -12,18 +12,18 @@ namespace LABO_Tools.Services
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
                         {
-                            options.TokenValidationParameters = new TokenValidationParameters
-                            {
-                                ValidateIssuer = true,
-                                ValidateAudience = true,
-                                ValidateLifetime = true,
-                                ValidateIssuerSigningKey = true,
-                                IssuerSigningKey = TokenHelper.SIGNING_KEY,
-                                ValidIssuer = "http://localhost",
-                                ValidAudience = "http://localhost"
-                            };
-                        });
+                            ValidateIssuer = false,
+                            ValidateAudience = false,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey = TokenHelper.SIGNING_KEY,
+                            //ValidIssuer = "http://localhost",
+                            //ValidAudience = "http://localhost"
+                        };
+                    });
         }
     }
 }
