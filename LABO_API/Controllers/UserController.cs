@@ -43,7 +43,7 @@ namespace LABO_API.Controllers
             {
                 var result = _UserRepo.Get();
 
-                if (result is not null) return Ok(result);
+            if (result is not null) return Ok(result);
 
                 return BadRequest();
             }

@@ -74,6 +74,19 @@ namespace LABO_DAL.Repositories
             // Exclue la colonne identité de la mise à jour ID + nom de la table (convention perso)
             propertyDict.Remove($"ID{tableName}");
 
+            //if (propertyDict.ContainsKey("MotDePasse"))
+            //{
+            //    // Récupérez la valeur du champ "MotDePasse"
+            //    string? plainPassword = propertyDict["MotDePasse"]?.ToString();
+
+            //    // Appliquez le hachage au mot de passe
+            //    string hashedPassword = BC.HashPassword(plainPassword); // => BC : BCrypt
+
+            //    // Remplacez la valeur du champ "MotDePasse" par le mot de passe haché
+            //    propertyDict["MotDePasse"] = hashedPassword;
+            //}
+
+
             string columns = string.Join(", ", propertyDict.Keys);
             string values = string.Join(", ", propertyDict.Keys.Select(k => "@" + k));
             string query = $"INSERT INTO {tableName} ({columns}) VALUES ({values})";

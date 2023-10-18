@@ -26,13 +26,15 @@ namespace LABO_DAL.Repositories
         {
             if (model is not null)
             {
+                // Hache le mot de passe
+                string hashedPassword = BC.HashPassword(model.MotDePasse); // BC => BCrypt
                 return new UserDTO()
                 {
                     //IDUtilisateur = 0, => Je ne souhaite pas renseigner d'ID à la création
                     Nom = model.Nom,
                     Prenom = model.Prenom,
                     Email = model.Email,
-                    MotDePasse = model.MotDePasse
+                    MotDePasse = hashedPassword // Attribue le mot de passe haché
                 };
             }
             return null;
@@ -65,11 +67,18 @@ namespace LABO_DAL.Repositories
 
         public bool GetById(string email, string motDePasse)
         {
-                string query = "SELECT * FROM Utilisateur WHERE Email = @Email AND MotDePasse = @MotDePasse";
+            string query = "SELECT MotDePasse FROM Utilisateur WHERE Email = @Email";
 
-                UserDTO? result = _connection.QuerySingleOrDefault<UserDTO>(query, new { Email = email, MotDePasse = motDePasse });
+            string? hashedPassword = _connection.QueryFirstOrDefault<string>(query, new { Email = email });
 
-                return result is null ? false : true;           
+            if (hashedPassword != null)
+            {
+                // Utilise BCrypt.Verify pour comparer le mot de passe en clair avec le hachage en base de données
+                bool isPasswordValid = BC.Verify(motDePasse, hashedPassword); // BC => BCrypt
+                return isPasswordValid;
+            }
+
+            return false;
         }
     }
 }
