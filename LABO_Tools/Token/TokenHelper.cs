@@ -1,6 +1,8 @@
-﻿//using Microsoft.Extensions.Configuration;
+﻿#region - Fixe - me viré la const et récup via .json
+//using Microsoft.Extensions.Configuration;
 //using Microsoft.IdentityModel.Tokens;
 //using System.Text;
+
 
 //namespace LABO_Tools.Token
 //{
@@ -25,6 +27,7 @@
 //    }
 //}
 
+#endregion
 
 using Microsoft.IdentityModel.Tokens;
 
