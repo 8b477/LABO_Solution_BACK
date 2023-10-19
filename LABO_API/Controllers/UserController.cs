@@ -5,6 +5,8 @@ using LABO_Tools.Token;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using System.Threading;
+using System.Threading.Channels;
 
 namespace LABO_API.Controllers
     {
@@ -40,9 +42,14 @@ namespace LABO_API.Controllers
             [ProducesResponseType(StatusCodes.Status200OK)]
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-            public async Task<IActionResult> Get()
+            public async Task<IActionResult> Get(CancellationToken cancel)
             {
-                var result = await _UserRepo.Get();
+
+            // Vérifie si l'annulation a été demandée
+            _UserRepo.CancelledMethod(cancel);
+
+            var result = await _UserRepo.Get();
+
 
             if (result is not null)
             {
@@ -67,9 +74,13 @@ namespace LABO_API.Controllers
             [ProducesResponseType(StatusCodes.Status200OK)] // --> 'NICE HAVE' : CHECK ROLE SI ADMIN AUTHORISER
             [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-            public async Task<IActionResult?> Get(int id)
+            public async Task<IActionResult?> Get(int id, CancellationToken cancel)
             {
-                var result = await _UserRepo.GetById(id);
+
+            // Vérifie si l'annulation a été demandée
+            _UserRepo.CancelledMethod(cancel);
+
+            var result = await _UserRepo.GetById(id);
 
                 if (result is not null) return Ok(result);
   
@@ -89,9 +100,13 @@ namespace LABO_API.Controllers
             [ProducesResponseType(StatusCodes.Status201Created)]
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-            public async Task<IActionResult?> Post([FromBody] UserDTOCreate model)
+            public async Task<IActionResult?> Post([FromBody] UserDTOCreate model, CancellationToken cancel)
             {
-                UserDTO? user = _UserRepo.ToModelCreate(model);
+
+            // Vérifie si l'annulation a été demandée
+            _UserRepo.CancelledMethod(cancel);
+
+            UserDTO? user = _UserRepo.ToModelCreate(model);
 
                 if (user is not null)
                 {
@@ -113,9 +128,13 @@ namespace LABO_API.Controllers
             [ProducesResponseType(StatusCodes.Status204NoContent)] // --> 'NICE HAVE' : CHECK ROLE SI ADMIN AUTHORISER
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-            public async Task<IActionResult?> Delete(int id)
+            public async Task<IActionResult?> Delete(int id, CancellationToken cancel)
             {
-                bool result = await _UserRepo.Delete(id);
+
+            // Vérifie si l'annulation a été demandée
+            _UserRepo.CancelledMethod(cancel);
+
+            bool result = await _UserRepo.Delete(id);
 
                 if (result) return NoContent();
 
@@ -135,9 +154,14 @@ namespace LABO_API.Controllers
             [ProducesResponseType(StatusCodes.Status200OK)] // --> 'NICE HAVE' : SI PROFIL PERSO AUTHORISER
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-            public async Task<IActionResult?> Put([FromRoute] int id, [FromBody] UserDTOCreate model)
+            public async Task<IActionResult?> Put([FromRoute] int id, [FromBody] UserDTOCreate model, CancellationToken cancel)
             {
-                UserDTO? user = _UserRepo.ToModelCreate(model);
+
+            // Vérifie si l'annulation a été demandée
+            _UserRepo.CancelledMethod(cancel);
+
+
+            UserDTO? user = _UserRepo.ToModelCreate(model);
 
                 if (user is not null)
                 {
@@ -153,8 +177,10 @@ namespace LABO_API.Controllers
 
             [AllowAnonymous]
             [HttpPost("Log")]
-            public async Task<IActionResult> Get(UserDTORegister user)
+            public async Task<IActionResult> Get(UserDTORegister user, CancellationToken cancel)
             {
+
+            _UserRepo.CancelledMethod(cancel);
 
             if (await _UserRepo.GetById(user.Email, user.MotDePasse))
                 return new ObjectResult(GenerateTokenHandler.GenerateToken(user.Email));

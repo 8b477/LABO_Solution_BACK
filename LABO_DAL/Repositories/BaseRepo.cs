@@ -158,6 +158,18 @@ namespace LABO_DAL.Repositories
             return rowsAffected > 0 ? item : null;
         }
 
+
+        public IAsyncResult? CancelledMethod(CancellationToken cancel)
+        {
+            // Vérifie si l'annulation a été demandée
+            if (cancel.IsCancellationRequested)
+            {
+                throw new OperationCanceledException("Opération annulé", cancel);
+            }
+
+            return null;
+        }
+
         #endregion
 
 
