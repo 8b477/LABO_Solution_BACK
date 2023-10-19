@@ -1,5 +1,7 @@
 ﻿using LABO_DAL.DTO;
 using LABO_DAL.Repositories;
+using LABO_Entities;
+
 using LABO_Tools.Token;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -43,7 +45,14 @@ namespace LABO_API.Controllers
             {
                 var result = _UserRepo.Get();
 
-            if (result is not null) return Ok(result);
+            if (result is not null)
+            {
+                // Converti les utilisateurs avec le champ MotDePasse masqué
+                var users = result.Select(u => _UserRepo.ToModelDisplay(u)).ToList();
+
+                return Ok(users);
+                
+            }
 
                 return BadRequest();
             }

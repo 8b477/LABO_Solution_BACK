@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LABO_Entities", "LABO_Entit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LABO_Tools", "LABO_Tools\LABO_Tools.csproj", "{DA30A985-C214-4D3B-AF53-F7BBFEA4F35D}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "LABO_DataBase", "LABO_DataBase\LABO_DataBase.sqlproj", "{9DD9714D-E0AB-47A3-882F-82CAB603C29D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,12 @@ Global
 		{DA30A985-C214-4D3B-AF53-F7BBFEA4F35D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA30A985-C214-4D3B-AF53-F7BBFEA4F35D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA30A985-C214-4D3B-AF53-F7BBFEA4F35D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DD9714D-E0AB-47A3-882F-82CAB603C29D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DD9714D-E0AB-47A3-882F-82CAB603C29D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DD9714D-E0AB-47A3-882F-82CAB603C29D}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{9DD9714D-E0AB-47A3-882F-82CAB603C29D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DD9714D-E0AB-47A3-882F-82CAB603C29D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DD9714D-E0AB-47A3-882F-82CAB603C29D}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,7 +2,7 @@
 
 namespace LABO_DAL.DTO
 {
-    public class UserDTO
+    public record class UserDTO
     {
         [ColumnName(nameof(IDUtilisateur))]
         public int IDUtilisateur { get; set; }
@@ -20,7 +20,7 @@ namespace LABO_DAL.DTO
         public string MotDePasse { get; set; }
     }
 
-    public class UserDTOCreate
+    public record class UserDTOCreate
     {
 
         [ColumnName(nameof(Nom))]
@@ -33,7 +33,7 @@ namespace LABO_DAL.DTO
         public string MotDePasse { get; set; }
     }
 
-    public class UserDTOList
+    public record class UserDTOList
     {
         [ColumnName(nameof(IDUtilisateur))]
         public int IDUtilisateur { get; set; }
@@ -51,7 +51,7 @@ namespace LABO_DAL.DTO
         public string MotDePasse { get; set; }
     }
 
-    public class UserDTORegister
+    public record class UserDTORegister
     {
         [ColumnName(nameof(Email))]
         public string Email { get; set; }

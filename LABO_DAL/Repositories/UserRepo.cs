@@ -65,6 +65,8 @@ namespace LABO_DAL.Repositories
 
 
 
+
+
         /// <summary>
         /// Vérifie si le mot de passe en clair correspond au mot de passe haché en base de données pour un utilisateur donné.
         /// </summary>
