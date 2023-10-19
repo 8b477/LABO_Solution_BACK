@@ -1,7 +1,7 @@
 ﻿
 namespace LABO_DAL.DTO
 {
-    public class ProjetDTO
+    public record class ProjetDTO
     {
         [ColumnName(nameof(IDProjet))]
         public int IDProjet { get; set; }
@@ -26,7 +26,7 @@ namespace LABO_DAL.DTO
         public int IDUtilisateur { get; set; } // --> FK
     }
 
-    public class ProjetDTOCreate
+    public record class ProjetDTOCreate
     {
 
         [ColumnName(nameof(Nom))]
@@ -49,7 +49,7 @@ namespace LABO_DAL.DTO
         public int IDUtilisateur { get; set; } // --> FK
     }
 
-    public class ProjetDTOList
+    public record class ProjetDTOList
     {
         [ColumnName(nameof(IDProjet))]
         public int IDProjet { get; set; }

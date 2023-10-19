@@ -1,6 +1,4 @@
-﻿using LABO_DAL.DTO;
-
-
+﻿
 
 namespace LABO_DAL.Interfaces
 {
@@ -10,10 +8,10 @@ namespace LABO_DAL.Interfaces
         where MD : class  // prend un model pour l'affichage = Entité en base de donnée (MD)
         where T : class   // un type (T)
     {
-        bool Create(M item);
-        IEnumerable<M> Get();
-        MD GetById(U id);
-        M Update(U id,M item);
-        bool Delete(U id);
+        Task<bool> Create(M item);
+        Task<IEnumerable<M>> Get();
+        Task<MD?> GetById(U id);
+        Task<M?> Update(U id,M item);
+        Task<bool> Delete(U id);
     }
 }

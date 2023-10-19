@@ -1,11 +1,8 @@
 ﻿#region USING
 using Dapper;
-
 using LABO_DAL.Interfaces;
-
 using System.Data;
 using System.Reflection; 
-
 #endregion
 
 
@@ -43,7 +40,7 @@ namespace LABO_DAL.Repositories
         /// Récupère toutes les entrées de la table correspondante au modèle M.
         /// </summary>
         /// <returns>Une liste d'objets de type M.</returns>
-        public IEnumerable<M> Get()
+        public async Task<IEnumerable<M>> Get()
         {
             // Utilise la Reflection pour obtenir les noms de colonnes à partir des attributs
             var columnNames = typeof(T)
@@ -56,7 +53,9 @@ namespace LABO_DAL.Repositories
 
             string columns = string.Join(", ", columnNames);
             string query = $"SELECT {columns} FROM {GetTableName()}";
-            return _connection.Query<M>(query);
+
+            var result = await _connection.QueryAsync<M>(query);
+            return result;
         }
 
 
@@ -66,7 +65,7 @@ namespace LABO_DAL.Repositories
         /// </summary>
         /// <param name="item">Objet de type M à insérer dans la base de données.</param>
         /// <returns>True si l'opération a réussi, sinon False.</returns>
-        public bool Create(M item)
+        public async Task<bool> Create(M item)
         {
             string tableName = GetTableName();
             var propertyDict = GetPropertyDictionary(item);
@@ -77,7 +76,7 @@ namespace LABO_DAL.Repositories
             string columns = string.Join(", ", propertyDict.Keys);
             string values = string.Join(", ", propertyDict.Keys.Select(k => "@" + k));
             string query = $"INSERT INTO {tableName} ({columns}) VALUES ({values})";
-            int rowAffected = _connection.Execute(query, item);
+            int rowAffected =  await _connection.ExecuteAsync(query, item);
 
             return rowAffected > 0;
         }
@@ -89,11 +88,11 @@ namespace LABO_DAL.Repositories
         /// </summary>
         /// <param name="id">ID de l'entrée à supprimer.</param>
         /// <returns>True si l'opération a réussi, sinon False.</returns>
-        public bool Delete(U id)
+        public async Task<bool> Delete(U id)
         {
             string tableName = GetTableName();
             string query = $"DELETE FROM {tableName} WHERE ID{tableName} = @Id";
-            int rowsAffected = _connection.Execute(query, new { Id = id });
+            int rowsAffected = await _connection.ExecuteAsync(query, new { Id = id });
             return rowsAffected > 0;
         }
 
@@ -104,14 +103,16 @@ namespace LABO_DAL.Repositories
         /// </summary>
         /// <param name="id">ID de l'entrée à récupérer.</param>
         /// <returns>Un objet de type MD si trouvé, sinon null.</returns>
-        public MD? GetById(U id)
+        public async Task<MD?> GetById(U id)
         {
             string tableName = GetTableName();
             string query = $"SELECT * FROM {tableName} WHERE ID{tableName} = @Id";
-            M? result = _connection.QuerySingleOrDefault<M>(query, new { Id = id });
+
+            var result = await _connection.QuerySingleOrDefaultAsync<M>(query, new { Id = id });
 
             if (result is null)
                 return null;
+
 
             return ToModelDisplay(result);
         }
@@ -124,7 +125,7 @@ namespace LABO_DAL.Repositories
         /// <param name="id">ID de l'entrée à mettre à jour.</param>
         /// <param name="item">Objet de type M contenant les nouvelles données.</param>
         /// <returns>Un objet de type M si la mise à jour a réussi, sinon null.</returns>
-        public M? Update(U id, M item)
+        public async Task<M?> Update(U id, M item)
         {
             string tableName = GetTableName();
             var propertyDict = GetPropertyDictionary(item);
@@ -152,7 +153,7 @@ namespace LABO_DAL.Repositories
                 parameters.Add(kvp.Key, kvp.Value);
             }
 
-            int rowsAffected = _connection.Execute(query, parameters);
+            int rowsAffected = await _connection.ExecuteAsync(query, parameters);
 
             return rowsAffected > 0 ? item : null;
         }
