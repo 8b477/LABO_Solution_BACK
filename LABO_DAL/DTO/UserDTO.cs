@@ -2,6 +2,11 @@
 
 namespace LABO_DAL.DTO
 {
+
+    /// <summary>
+    /// UserDTO est une classe qui représente la table en base de donnée.
+    /// </summary>
+
     public record class UserDTO
     {
         [ColumnName(nameof(IDUtilisateur))]
@@ -20,6 +25,11 @@ namespace LABO_DAL.DTO
         public string MotDePasse { get; set; }
     }
 
+
+    /// <summary>
+    /// UserDTOCreate est une classe qui représente le modèle visuel pour la création/update d'un utilisateur.
+    /// </summary>
+
     public record class UserDTOCreate
     {
 
@@ -32,6 +42,11 @@ namespace LABO_DAL.DTO
         [ColumnName(nameof(MotDePasse))]
         public string MotDePasse { get; set; }
     }
+
+
+    /// <summary>
+    /// UserDTOList est une classe qui représente la façon d'afficher des utilisateurs.
+    /// </summary>
 
     public record class UserDTOList
     {
@@ -50,6 +65,11 @@ namespace LABO_DAL.DTO
         [ColumnName(nameof(MotDePasse))]
         public string MotDePasse { get; set; }
     }
+
+
+    /// <summary>
+    /// UserDTORegister représente la façon de log un utilisateur.
+    /// </summary>
 
     public record class UserDTORegister
     {

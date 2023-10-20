@@ -1,16 +1,27 @@
 ﻿
 namespace LABO_DAL
 {
+    /// <summary>
+    /// Un attribut personnalisé utilisé pour spécifier le nom d'une colonne associée à une propriété.
+    /// Utilisé pour la liaison entre des modèles de données et des tables de bases de données.
+    /// </summary>
 
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     sealed class ColumnNameAttribute : Attribute
     {
+
         public string Name { get; }
+
+        /// <summary>
+        /// Initialise une nouvelle instance de la classe ColumnNameAttribute avec le nom de la colonne.
+        /// </summary>
+        /// <param name="name">Le nom de la colonne associé à la propriété.</param>
 
         public ColumnNameAttribute(string name)
         {
             Name = name;
         }
+
     }
 }
 

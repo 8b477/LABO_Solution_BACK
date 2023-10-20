@@ -9,13 +9,20 @@ namespace LABO_DAL.Repositories
     public class UserRepo : BaseRepo<UserDTO, UserDTOCreate, UserDTOList, Utilisateur, int>
     {
 
+        #region Constructeur
+
         /// <summary>
         /// Initialise une nouvelle instance de la classe UserRepo avec une connexion de base de données.
         /// </summary>
         /// <param name="connection">Objet IDbConnection pour interagir avec la base de données.</param>
+
         public UserRepo(IDbConnection connection) : base(connection) { }
 
+        #endregion
 
+
+
+        #region Mapper
 
         /// <summary>
         /// Convertit un objet de modèle UserDTOCreate en un objet de modèle UserDTO.
@@ -63,7 +70,11 @@ namespace LABO_DAL.Repositories
             return null;
         }
 
+        #endregion
 
+
+
+        #region Method (Check pass and mail)
 
         /// <summary>
         /// Vérifie si le mot de passe en clair correspond au mot de passe haché en base de données pour un utilisateur donné.
@@ -75,7 +86,7 @@ namespace LABO_DAL.Repositories
         {
             string query = "SELECT MotDePasse FROM Utilisateur WHERE Email = @Email";
 
-            string? hashedPassword  =await _connection.QueryFirstOrDefaultAsync<string>(query, new { Email = email });
+            string? hashedPassword = await _connection.QueryFirstOrDefaultAsync<string>(query, new { Email = email });
 
             if (hashedPassword != null)
             {
@@ -87,6 +98,7 @@ namespace LABO_DAL.Repositories
             return false;
         }
 
+        #endregion
 
 
     }

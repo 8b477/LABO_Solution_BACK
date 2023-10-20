@@ -48,6 +48,7 @@ namespace LABO_Tools.Filters
             }
         }
 
+
         // Cette méthode est exécutée avant que l'action ne soit exécutée, on peut y ajouter des logiques si nécessaire.
         public void OnActionExecuting(ActionExecutingContext context)
         {

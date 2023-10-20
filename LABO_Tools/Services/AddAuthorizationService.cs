@@ -3,8 +3,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LABO_Tools.Services
 {
+    /// <summary>
+    /// Classe d'extension statique pour configurer les politiques d'autorisation dans ASP.NET Core.
+    /// </summary>
+
     public static class AddAuthorizationService
     {
+
+        /// <summary>
+        /// Configure les politiques d'autorisation pour spécifier comment les utilisateurs sont autorisés à accéder aux ressources de l'application.
+        /// </summary>
+        /// <param name="services">La collection de services.</param>
 
         public static void ConfigureAuthorization(this IServiceCollection services)
         {
@@ -21,5 +30,7 @@ namespace LABO_Tools.Services
                 });
             });
         }
+
     }    
+
 }

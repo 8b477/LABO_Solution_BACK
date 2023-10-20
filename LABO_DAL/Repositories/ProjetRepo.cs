@@ -8,8 +8,25 @@ namespace LABO_DAL.Repositories
     public class ProjetRepo : BaseRepo<ProjetDTO, ProjetDTOCreate, ProjetDTOList, Projet, int>
     {
 
-        public ProjetRepo(IDbConnection connection) : base(connection) {}
+        #region Constructeur
 
+        /// <summary>
+        /// Initialise une nouvelle instance de la classe ProjetRepo avec une connexion de base de données.
+        /// </summary>
+        /// <param name="connection">Objet IDbConnection pour interagir avec la base de données.</param>
+
+        public ProjetRepo(IDbConnection connection) : base(connection) { }
+
+        #endregion
+
+
+        #region Mapper
+
+        /// <summary>
+        /// Convertit un modèle de création de projet (ProjetDTOCreate) en un modèle de projet (ProjetDTO).
+        /// </summary>
+        /// <param name="model">Le modèle de création de projet à convertir.</param>
+        /// <returns>Le modèle de projet correspondant ou null si le modèle d'entrée est null.</returns>
 
         public override ProjetDTO? ToModelCreate(ProjetDTOCreate model)
         {
@@ -30,6 +47,12 @@ namespace LABO_DAL.Repositories
         }
 
 
+        /// <summary>
+        /// Convertit un modèle de projet (ProjetDTO) en un modèle d'affichage de projet (ProjetDTOList).
+        /// </summary>
+        /// <param name="model">Le modèle de projet à convertir.</param>
+        /// <returns>Le modèle d'affichage de projet correspondant ou null si le modèle d'entrée est null.</returns>
+
         public override ProjetDTOList? ToModelDisplay(ProjetDTO model)
         {
             if (model is not null)
@@ -48,6 +71,7 @@ namespace LABO_DAL.Repositories
             return null;
         }
 
+        #endregion
 
     }
 }

@@ -1,6 +1,10 @@
 ﻿
 namespace LABO_DAL.DTO
 {
+    /// <summary>
+    /// ProjetDTO est une classe qui représente la table en base de donnée.
+    /// </summary>
+
     public record class ProjetDTO
     {
         [ColumnName(nameof(IDProjet))]
@@ -26,6 +30,11 @@ namespace LABO_DAL.DTO
         public int IDUtilisateur { get; set; } // --> FK
     }
 
+
+    /// <summary>
+    /// ProjetDTOCreate est une classe pour la création de nouveaux projets.
+    /// </summary>
+
     public record class ProjetDTOCreate
     {
 
@@ -48,6 +57,11 @@ namespace LABO_DAL.DTO
         [ColumnName(nameof(IDUtilisateur))]
         public int IDUtilisateur { get; set; } // --> FK
     }
+
+
+    /// <summary>
+    /// ProjetDTOList est une classe pour afficher des projets.
+    /// </summary>
 
     public record class ProjetDTOList
     {

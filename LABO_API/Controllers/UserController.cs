@@ -45,7 +45,7 @@ namespace LABO_API.Controllers
             public async Task<IActionResult> Get()
             {
                 // Test CancellationFilter + Log
-                 await Task.Delay(10000);  // => Simule une longue attente 
+                // await Task.Delay(10000);  // => Simule une longue attente 
 
                 var result = await _UserRepo.Get();
 

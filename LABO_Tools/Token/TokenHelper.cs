@@ -1,4 +1,31 @@
-﻿#region - Fixe - me viré la const et récup via .json
+﻿using Microsoft.IdentityModel.Tokens;
+
+using System.Text;
+
+namespace LABO_Tools.Token
+{
+
+    /// <summary>
+    /// Clé secrète utilisée pour la signature des jetons JWT.
+    /// </summary>
+
+    public class TokenHelper
+    {
+        private const string SECRET_KEY = "TQvgjeABMPOwCycOqah5EQu5yyVjpmVG";
+
+        public static readonly SymmetricSecurityKey SIGNING_KEY = new
+                               SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
+    }
+}
+
+
+
+
+
+
+
+
+#region - Fixe ME - viré la const et récup via .json
 //using Microsoft.Extensions.Configuration;
 //using Microsoft.IdentityModel.Tokens;
 //using System.Text;
@@ -28,22 +55,3 @@
 //}
 
 #endregion
-
-using Microsoft.IdentityModel.Tokens;
-
-using System.Text;
-
-namespace LABO_Tools.Token
-{
-    /// <summary>
-    /// Création de notre clef secrete pour notre token.
-    /// </summary>
-
-    public class TokenHelper
-    {
-        private const string SECRET_KEY = "TQvgjeABMPOwCycOqah5EQu5yyVjpmVG";
-
-        public static readonly SymmetricSecurityKey SIGNING_KEY = new
-                               SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
-    }
-}
