@@ -82,7 +82,7 @@ namespace LABO_DAL.Repositories
         /// <param name="email">L'adresse e-mail de l'utilisateur.</param>
         /// <param name="motDePasse">Le mot de passe en clair à vérifier.</param>
         /// <returns>True si le mot de passe est valide, sinon False.</returns>
-        public async Task<bool> GetById(string email, string motDePasse)
+        public async Task<UserDTO?> Logger(string email, string motDePasse)
         {
             string query = "SELECT MotDePasse FROM Utilisateur WHERE Email = @Email";
 
@@ -92,10 +92,31 @@ namespace LABO_DAL.Repositories
             {
                 // Utilise BCrypt.Verify pour comparer le mot de passe en clair avec le hachage en base de données
                 bool isPasswordValid = BC.Verify(motDePasse, hashedPassword); // BC => BCrypt
-                return isPasswordValid;
+                
+                if(isPasswordValid)
+                {
+                    string query2 = "SELECT * FROM Utilisateur WHERE Email = @Email";
+
+                    UserDTO? user = await _connection.QueryFirstOrDefaultAsync<UserDTO>(query2, new { Email = email });
+
+
+                    if(user is not null)
+                    {
+                        return new UserDTO()
+                        {
+                            IDUtilisateur = user.IDUtilisateur,
+                            Nom = user.Nom,
+                            Prenom = user.Prenom,
+                            Email = user.Email,
+                            MotDePasse = "*******"
+                        };
+                    }
+
+                }
+
             }
 
-            return false;
+            return null;
         }
 
         #endregion

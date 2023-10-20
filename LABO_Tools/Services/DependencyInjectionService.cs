@@ -31,7 +31,7 @@ namespace LABO_Tools.Services
 
             // Enregistre un filtre CancellationFilter pour être utilisé par les contrôleurs.
             services.AddScoped<CancellationFilter>();
-
+            services.AddScoped<JwtUserIdentifiantFilter>();
         }
     }
 

@@ -1,6 +1,7 @@
 ﻿using LABO_DAL.DTO;
 using LABO_Entities;
 using System.Data;
+using System.Net.Http;
 
 
 namespace LABO_DAL.Repositories
@@ -35,12 +36,12 @@ namespace LABO_DAL.Repositories
                 return new ProjetDTO()
                 {
                     //IDProjet = model.IDUtilisateur, => Je ne souhaite pas renseigner d'ID à la création
+                    //IDUtilisateur = model.IDUtilisateur, => Je ne souhaite pas renseigner d'ID à la création
                     Nom = model.Nom,
                     Montant = model.Montant,
-                    DateCreation = model.DateCreation,
-                    DateMiseEnLigne = model.DateMiseEnLigne,
-                    DateDeFin = model.DateDeFin,
-                    IDUtilisateur = model.IDUtilisateur
+                    DateCreation = DateTime.Today,
+                    DateMiseEnLigne = null,
+                    DateDeFin = null
                 };
             }
             return null;

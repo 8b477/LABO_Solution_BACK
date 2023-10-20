@@ -10,6 +10,7 @@ namespace LABO_API.Controllers
 {
     [Route("api/[controller]")]
     [Authorize("RequireToken")]
+    [ServiceFilter(typeof(CancellationFilter))]
     [ApiController]
     public class ProjetController : ControllerBase
     {
@@ -42,7 +43,6 @@ namespace LABO_API.Controllers
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ServiceFilter(typeof(CancellationFilter))]
 
         public async Task<IActionResult> Get()
         {
@@ -64,7 +64,6 @@ namespace LABO_API.Controllers
         [HttpGet("{id}")]                // --> 'NICE HAVE' : CHERCHER VIA LE NOM DU PROJET
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ServiceFilter(typeof(CancellationFilter))]
 
         public async Task<IActionResult> Get(int id)
         {
@@ -85,16 +84,25 @@ namespace LABO_API.Controllers
         [HttpPost]                              // --> 'NICE HAVE' : NOM DU PROJET UNIQUE 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ServiceFilter(typeof(CancellationFilter))]
+        [ServiceFilter(typeof(JwtUserIdentifiantFilter))]
 
         public async Task<IActionResult> Post([FromBody] ProjetDTOCreate model)
         {
+            //Récupère l'id de la personne préalablement connecter
+            string? identifiant = HttpContext?.Items["identifiant"]?.ToString();
+            int id = int.Parse(identifiant);
 
-            ProjetDTO? user = _projetRepo.ToModelCreate(model);
-
-            if(user is not null)
+            ProjetDTO projet = new()
             {
-                if(await _projetRepo.Create(user))
+                IDUtilisateur = id, // -> insère l'id lié a l'utilisateur qui créée le projet
+                Nom = model.Nom,
+                Montant = model.Montant,
+                DateCreation = DateTime.Now
+            };
+
+            if(projet is not null)
+            {
+                if(await _projetRepo.Create(projet))
                     return CreatedAtAction(nameof(Post), model);
             }
             return BadRequest();
@@ -111,7 +119,6 @@ namespace LABO_API.Controllers
         [HttpPut("{id}")]              // --> 'NICE HAVE' : UN PROJET UNE FOIS VALIDER NE PEUT PLUS ETRE MODIFIER
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ServiceFilter(typeof(CancellationFilter))]
 
         public async Task<IActionResult> Put(int id, [FromBody] ProjetDTOCreate model)
         {
@@ -138,7 +145,6 @@ namespace LABO_API.Controllers
         [HttpDelete("{id}")]  // --> 'NICE HAVE' : LAISSER LA POSIBILITER DE SUPPRIMER ?
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ServiceFilter(typeof(CancellationFilter))]
 
         public async Task<IActionResult> Delete(int id)
         {

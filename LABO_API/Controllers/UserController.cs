@@ -160,18 +160,23 @@ namespace LABO_API.Controllers
 
 
 
-
+            /// <summary>
+            /// Connecte un utilisateur si les datas son correct
+            /// </summary>
+            /// <param name="user">Modèle UserDTORegister pour une connection</param>
+            /// <returns>Retourne un token avec des infos sur l'utilisateur</returns>
             [AllowAnonymous]
             [HttpPost("Log")]
 
-            public async Task<IActionResult> Get(UserDTORegister user)
+            public async Task<IActionResult> Get(UserDTORegister model)
             {
 
-            if (await _UserRepo.GetById(user.Email, user.MotDePasse))
-                return new ObjectResult(GenerateTokenHandler.GenerateToken(user.Email));
+            UserDTO? user = await _UserRepo.Logger(model.Email, model.MotDePasse);
+
+            if(user is not null)
+                return new ObjectResult(GenerateTokenHandler.GenerateToken(user.IDUtilisateur.ToString()));
 
             return BadRequest();
-
             }
     }
 }
