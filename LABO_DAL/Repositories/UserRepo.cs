@@ -2,6 +2,7 @@
 using LABO_DAL.DTO;
 using LABO_Entities;
 using System.Data;
+using System.Reflection;
 
 
 namespace LABO_DAL.Repositories
@@ -41,7 +42,8 @@ namespace LABO_DAL.Repositories
                     Nom = model.Nom,
                     Prenom = model.Prenom,
                     Email = model.Email,
-                    MotDePasse = hashedPassword // Attribue le mot de passe haché
+                    MotDePasse = hashedPassword, // Attribue le mot de passe haché
+                    UserRole = "Visiteur"
                 };
             }
             return null;
@@ -63,8 +65,9 @@ namespace LABO_DAL.Repositories
                     IDUtilisateur = model.IDUtilisateur,
                     Nom = model.Nom,
                     Prenom = model.Prenom,
-                    Email = model.Email,
-                    MotDePasse = "********" // masquer le mot de passe ici pour l'affichage.
+                    UserRole = model.UserRole,
+                    Email = "******" + model.Email.Substring((model.Email.Length) / 2),
+                    MotDePasse = "********", // masquer le mot de passe ici pour l'affichage.
                 };
             }
             return null;
@@ -107,7 +110,7 @@ namespace LABO_DAL.Repositories
                             IDUtilisateur = user.IDUtilisateur,
                             Nom = user.Nom,
                             Prenom = user.Prenom,
-                            Email = user.Email,
+                            Email = "******" + user.Email.Substring((user.Email.Length) / 2),
                             MotDePasse = "*******"
                         };
                     }

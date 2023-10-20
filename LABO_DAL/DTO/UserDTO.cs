@@ -23,6 +23,9 @@ namespace LABO_DAL.DTO
 
         [ColumnName(nameof(MotDePasse))]
         public string MotDePasse { get; set; }
+
+        [ColumnName(nameof(UserRole))]
+        public string UserRole { get; set; }
     }
 
 
@@ -64,6 +67,9 @@ namespace LABO_DAL.DTO
 
         [ColumnName(nameof(MotDePasse))]
         public string MotDePasse { get; set; }
+
+        [ColumnName(nameof(UserRole))]
+        public string UserRole { get; set; }
     }
 
 

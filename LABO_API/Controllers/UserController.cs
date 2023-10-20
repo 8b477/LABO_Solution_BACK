@@ -178,5 +178,25 @@ namespace LABO_API.Controllers
 
             return BadRequest();
             }
+
+
+
+            [ServiceFilter(typeof(JwtUserIdentifiantFilter))]
+            [HttpGet("Profil")]
+
+            public async Task<IActionResult> Profil()
+            {
+                //Récupère l'id de la personne préalablement connecter
+                string? identifiant = HttpContext?.Items["identifiant"]?.ToString();
+                int id = int.Parse(identifiant!);
+
+                UserDTOList? user = await _UserRepo.GetById(id);
+
+            if (user is not null)
+                return Ok(user);
+
+            return Unauthorized();
+            }
+
     }
 }

@@ -104,7 +104,7 @@ namespace LABO_DAL.Repositories
         /// Récupère une entrée de la table correspondante au modèle MD par ID.
         /// </summary>
         /// <param name="id">ID de l'entrée à récupérer.</param>
-        /// <returns>Un objet de type MD si trouvé, sinon null.</returns>
+        /// <returns>Un objet de type ModèleDisplay si trouvé, sinon null.</returns>
         public async Task<MD?> GetById(U id)
         {
             string tableName = GetTableName();
