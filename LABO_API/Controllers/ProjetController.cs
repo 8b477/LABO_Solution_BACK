@@ -55,7 +55,6 @@ namespace LABO_API.Controllers
 
 
 
-
         /// <summary>
         /// Récupère un projet par son ID.
         /// </summary>
@@ -110,7 +109,6 @@ namespace LABO_API.Controllers
 
 
 
-
         /// <summary>
         /// Supprime un projet par son ID.
         /// </summary>
@@ -154,7 +152,6 @@ namespace LABO_API.Controllers
 
             return BadRequest();
         }
-
 
     }
 }

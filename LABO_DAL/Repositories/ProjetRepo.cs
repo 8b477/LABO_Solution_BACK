@@ -39,9 +39,7 @@ namespace LABO_DAL.Repositories
                     //IDUtilisateur = model.IDUtilisateur, => Je ne souhaite pas renseigner d'ID à la création
                     Nom = model.Nom,
                     Montant = model.Montant,
-                    DateCreation = DateTime.Today,
-                    DateMiseEnLigne = null,
-                    DateDeFin = null
+                    DateCreation = DateTime.Today
                 };
             }
             return null;

@@ -20,11 +20,13 @@ namespace LABO_DAL.DTO
         public DateTime DateCreation { get; set; }
 
         [ColumnName(nameof(DateMiseEnLigne))]
-        public DateTime? DateMiseEnLigne { get; set; }
+        public DateTime? DateMiseEnLigne { get; set; } = null;
 
         [ColumnName(nameof(DateDeFin))]
-        public DateTime? DateDeFin { get; set; }
+        public DateTime? DateDeFin { get; set; } = null;
 
+        [ColumnName(nameof(EstValid))] // --> Passe à valide quand 3 contrepartie son lié au projet
+        public bool EstValid { get; set; } = false;
 
         [ColumnName(nameof(IDUtilisateur))]
         public int IDUtilisateur { get; set; } // --> FK
