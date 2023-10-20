@@ -1,5 +1,7 @@
 ﻿using LABO_DAL.DTO;
 using LABO_DAL.Repositories;
+using LABO_Tools.Filters;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,6 +42,7 @@ namespace LABO_API.Controllers
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(CancellationFilter))]
 
         public async Task<IActionResult> Get()
         {
@@ -61,6 +64,7 @@ namespace LABO_API.Controllers
         [HttpGet("{id}")]                // --> 'NICE HAVE' : CHERCHER VIA LE NOM DU PROJET
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ServiceFilter(typeof(CancellationFilter))]
 
         public async Task<IActionResult> Get(int id)
         {
@@ -81,6 +85,7 @@ namespace LABO_API.Controllers
         [HttpPost]                              // --> 'NICE HAVE' : NOM DU PROJET UNIQUE 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(CancellationFilter))]
 
         public async Task<IActionResult> Post([FromBody] ProjetDTOCreate model)
         {
@@ -106,6 +111,7 @@ namespace LABO_API.Controllers
         [HttpPut("{id}")]              // --> 'NICE HAVE' : UN PROJET UNE FOIS VALIDER NE PEUT PLUS ETRE MODIFIER
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(CancellationFilter))]
 
         public async Task<IActionResult> Put(int id, [FromBody] ProjetDTOCreate model)
         {
@@ -132,6 +138,8 @@ namespace LABO_API.Controllers
         [HttpDelete("{id}")]  // --> 'NICE HAVE' : LAISSER LA POSIBILITER DE SUPPRIMER ?
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ServiceFilter(typeof(CancellationFilter))]
+
         public async Task<IActionResult> Delete(int id)
         {
             bool result = await _projetRepo.Delete(id);

@@ -1,6 +1,8 @@
 ﻿#region USING
 using Dapper;
 using LABO_DAL.Interfaces;
+
+
 using System.Data;
 using System.Reflection; 
 #endregion
@@ -159,16 +161,16 @@ namespace LABO_DAL.Repositories
         }
 
 
-        public IAsyncResult? CancelledMethod(CancellationToken cancel)
-        {
-            // Vérifie si l'annulation a été demandée
-            if (cancel.IsCancellationRequested)
-            {
-                throw new OperationCanceledException("Opération annulé", cancel);
-            }
+        //public IAsyncResult? CancelledMethod(CancellationToken cancel)
+        //{
+        //    // Vérifie si l'annulation a été demandée
+        //    if (cancel.IsCancellationRequested)
+        //    {
+        //        throw new OperationCanceledException("Opération annulé", cancel);
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         #endregion
 

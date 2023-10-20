@@ -1,6 +1,8 @@
 using LABO_Tools.Middleware;
 using LABO_Tools.Services;
 
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -19,6 +21,20 @@ AddAuthorizationService.ConfigureAuthorization(builder.Services);
 // ********************** INJECTION DE DEPENDANCE ******************************
 DependencyInjectionService.ConfigureDependencyInjection(builder.Services, builder.Configuration);
 
+
+
+// ********************** CONFIG SERILOG ***************************************************
+
+var configuration = new ConfigurationBuilder().AddJsonFile("serilogConfig.json").Build();
+
+Log .Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(configuration)
+    .CreateLogger();
+
+
+builder.Host.UseSerilog();
+
+//******************************************************************************************
 
 
 var app = builder.Build();

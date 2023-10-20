@@ -14,6 +14,6 @@ namespace LABO_DAL.Interfaces
         Task<M?> Update(U id,M item);
         Task<bool> Delete(U id);
 
-        IAsyncResult? CancelledMethod(CancellationToken cancel);
+       // IAsyncResult? CancelledMethod(CancellationToken cancel);
     }
 }

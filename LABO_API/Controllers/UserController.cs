@@ -1,17 +1,16 @@
 ﻿using LABO_DAL.DTO;
 using LABO_DAL.Repositories;
-
+using LABO_Tools.Filters;
 using LABO_Tools.Token;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using System.Threading;
-using System.Threading.Channels;
 
 namespace LABO_API.Controllers
     {
         [Route("api/[controller]")]
         [Authorize("RequireToken")]
+        [ServiceFilter(typeof(CancellationFilter))]
         [ApiController]
         public class UserController : ControllerBase
         {
@@ -22,12 +21,13 @@ namespace LABO_API.Controllers
 
             /// <summary>
             /// Initialise une nouvelle instance de la classe UserController avec l'injection de dépendance de UserRepo.
+            /// Ajoute aussi un système de log
             /// </summary>
             /// <param name="userRepo">Instance de UserRepo pour interagir avec les données utilisateur.</param>
+            /// <param name="logger">Instance de ILogger<UserController> pour interagir avec Usercontroller.</param>
             public UserController(UserRepo userRepo)
             {
                 _UserRepo = userRepo;
-
             }
             #endregion
 
@@ -42,24 +42,22 @@ namespace LABO_API.Controllers
             [ProducesResponseType(StatusCodes.Status200OK)]
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-            public async Task<IActionResult> Get(CancellationToken cancel)
+            public async Task<IActionResult> Get()
             {
+                // Test CancellationFilter + Log
+                 await Task.Delay(10000);  // => Simule une longue attente 
 
-            // Vérifie si l'annulation a été demandée
-            _UserRepo.CancelledMethod(cancel);
+                var result = await _UserRepo.Get();
 
-            var result = await _UserRepo.Get();
+                if (result is not null)
+                {
+                    // Converti les utilisateurs pour masqué le champ MotDePasse (sans éffacer les datas)
+                    var users = result.Select(u => _UserRepo.ToModelDisplay(u)).ToList();
 
-
-            if (result is not null)
-            {
-                // Converti les utilisateurs pour masqué le champ MotDePasse (sans éffacer les datas)
-                var users = result.Select(u => _UserRepo.ToModelDisplay(u)).ToList();
-
-                return Ok(users);
+                    return Ok(users);
                 
-            }
-                return BadRequest();
+                }
+            return BadRequest();
             }
 
 
@@ -74,11 +72,8 @@ namespace LABO_API.Controllers
             [ProducesResponseType(StatusCodes.Status200OK)] // --> 'NICE HAVE' : CHECK ROLE SI ADMIN AUTHORISER
             [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-            public async Task<IActionResult?> Get(int id, CancellationToken cancel)
+            public async Task<IActionResult?> Get(int id)
             {
-
-            // Vérifie si l'annulation a été demandée
-            _UserRepo.CancelledMethod(cancel);
 
             var result = await _UserRepo.GetById(id);
 
@@ -100,11 +95,8 @@ namespace LABO_API.Controllers
             [ProducesResponseType(StatusCodes.Status201Created)]
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-            public async Task<IActionResult?> Post([FromBody] UserDTOCreate model, CancellationToken cancel)
+            public async Task<IActionResult?> Post([FromBody] UserDTOCreate model)
             {
-
-            // Vérifie si l'annulation a été demandée
-            _UserRepo.CancelledMethod(cancel);
 
             UserDTO? user = _UserRepo.ToModelCreate(model);
 
@@ -128,18 +120,15 @@ namespace LABO_API.Controllers
             [ProducesResponseType(StatusCodes.Status204NoContent)] // --> 'NICE HAVE' : CHECK ROLE SI ADMIN AUTHORISER
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-            public async Task<IActionResult?> Delete(int id, CancellationToken cancel)
-            {
+            public async Task<IActionResult?> Delete(int id)
+                {
 
-            // Vérifie si l'annulation a été demandée
-            _UserRepo.CancelledMethod(cancel);
+                bool result = await _UserRepo.Delete(id);
 
-            bool result = await _UserRepo.Delete(id);
+                    if (result) return NoContent();
 
-                if (result) return NoContent();
-
-                return BadRequest();
-            }
+                    return BadRequest();
+                }
 
 
 
@@ -154,22 +143,19 @@ namespace LABO_API.Controllers
             [ProducesResponseType(StatusCodes.Status200OK)] // --> 'NICE HAVE' : SI PROFIL PERSO AUTHORISER
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-            public async Task<IActionResult?> Put([FromRoute] int id, [FromBody] UserDTOCreate model, CancellationToken cancel)
+            public async Task<IActionResult?> Put([FromRoute] int id, [FromBody] UserDTOCreate model)
             {
 
-            // Vérifie si l'annulation a été demandée
-            _UserRepo.CancelledMethod(cancel);
+                UserDTO? user = _UserRepo.ToModelCreate(model);
 
+                    if (user is not null)
+                    {
+                        var result = await _UserRepo.Update(id, user);
 
-            UserDTO? user = _UserRepo.ToModelCreate(model);
+                        if (result is not null) return Ok(model);
+                    }
 
-                if (user is not null)
-                {
-                    var result = await _UserRepo.Update(id, user);
-
-                    if (result is not null) return Ok(model);
-                }
-                return BadRequest();
+                    return BadRequest();
             }
 
 
@@ -177,10 +163,9 @@ namespace LABO_API.Controllers
 
             [AllowAnonymous]
             [HttpPost("Log")]
-            public async Task<IActionResult> Get(UserDTORegister user, CancellationToken cancel)
-            {
 
-            _UserRepo.CancelledMethod(cancel);
+            public async Task<IActionResult> Get(UserDTORegister user)
+            {
 
             if (await _UserRepo.GetById(user.Email, user.MotDePasse))
                 return new ObjectResult(GenerateTokenHandler.GenerateToken(user.Email));

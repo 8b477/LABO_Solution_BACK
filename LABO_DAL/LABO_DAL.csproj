@@ -8,9 +8,9 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-	 <Using Include="BCrypt.Net.BCrypt" Alias="BC"/>
+	 <Using Include="BCrypt.Net.BCrypt" Alias="BC" />
     <PackageReference Include="Dapper" Version="2.1.11" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 

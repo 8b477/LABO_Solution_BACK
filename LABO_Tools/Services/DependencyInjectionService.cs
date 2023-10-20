@@ -1,6 +1,5 @@
 ﻿using LABO_DAL.Repositories;
-using LABO_Tools.Token;
-
+using LABO_Tools.Filters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Data.SqlClient;
@@ -19,6 +18,10 @@ namespace LABO_Tools.Services
             services.AddScoped<UserRepo>(provider => new UserRepo(new SqlConnection(connectionString)));
 
             services.AddScoped<ProjetRepo>(provider => new ProjetRepo(new SqlConnection(connectionString)));
+
+
+            // FILTRE
+            services.AddScoped<CancellationFilter>();
 
         }
     }

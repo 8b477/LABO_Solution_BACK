@@ -15,7 +15,9 @@ namespace LABO_Tools.Services
                     policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
                     policy.RequireAuthenticatedUser();
                     policy.RequireAssertion(context => true); // Autorise toutes les requêtes si le token est correct
-                    // Ajouter une logique plus restrictive pour différencier les user qui créée un projet et ceux qui ne font que participer via des donation
+
+                    // NICE HAVE :
+                    // Ajouter une logique plus restrictive pour différencier les user qui créée un projet et ceux qui ne font que participer via des donation et ainsi ajuster les droits.
                 });
             });
         }
