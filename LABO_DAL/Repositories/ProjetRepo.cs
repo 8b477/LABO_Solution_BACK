@@ -6,7 +6,7 @@ using System.Net.Http;
 
 namespace LABO_DAL.Repositories
 {
-    public class ProjetRepo : BaseRepo<ProjetDTO, ProjetDTOCreate, ProjetDTOList, Projet, int>
+    public class ProjetRepo : BaseRepo<ProjetDTO, ProjetDTOCreate, ProjetDTOList, Projet, int, string>
     {
 
         #region Constructeur

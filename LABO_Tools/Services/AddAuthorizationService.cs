@@ -17,20 +17,26 @@ namespace LABO_Tools.Services
 
         public static void ConfigureAuthorization(this IServiceCollection services)
         {
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("RequireToken", policy =>
+
+                services.AddAuthorization(options =>
                 {
-                    policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireAssertion(context => true); // Autorise toutes les requêtes si le token est correct
+                    // Politique pour les utilisateurs avec le rôle "Register"
+                    options.AddPolicy("RequireRegisterRole", policy =>
+                    {
+                        policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                        policy.RequireAuthenticatedUser();
+                        policy.RequireRole("Visiteur"); // Spécifie le rôle requis
+                    });
 
-                    // NICE HAVE :
-                    // Ajouter une logique plus restrictive pour différencier les user qui créée un projet et ceux qui ne font que participer via des donation et ainsi ajuster les droits.
+                    // Politique pour les utilisateurs avec le rôle "Admin"
+                    options.AddPolicy("RequireAdminRole", policy =>
+                    {
+                        policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                        policy.RequireAuthenticatedUser();
+                        policy.RequireRole("Admin"); // Spécifie le rôle requis
+                    });
                 });
-            });
         }
-
     }    
 
 }

@@ -13,11 +13,13 @@ namespace LABO_DAL.Interfaces
     /// <typeparam name="T">Un type générique.</typeparam>
     /// <typeparam name="U">Le type de l'identifiant unique des données.</typeparam>
 
-    public interface IRepo<M, MC, MD, T, U>
-        where M : class
+    public interface IRepo<M, MC, MD, T, U, S>
+        where M  : class
         where MC : class
         where MD : class
-        where T : class
+        where T  : class
+        where U  : struct
+        where S  : class
     {
         /// <summary>
         /// Crée un nouvel élément en utilisant le modèle de données de base.
@@ -43,6 +45,15 @@ namespace LABO_DAL.Interfaces
         /// <returns>Une tâche qui renvoie le modèle de données d'affichage correspondant.</returns>
 
         Task<MD?> GetById(U id);
+
+
+        /// <summary>
+        /// Récupère un élément par son nom en utilisant le modèle de données d'affichage.
+        /// </summary>
+        /// <param name="name">Nom de l'élément à récupérer.</param>
+        /// <returns>Une tâche qui renvoie le modèle de données d'affichage correspondant.</returns>
+
+        Task<IEnumerable<M>?> GetByString(S name);
 
 
         /// <summary>

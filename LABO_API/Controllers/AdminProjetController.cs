@@ -1,20 +1,19 @@
 ﻿using LABO_DAL.DTO;
 using LABO_DAL.Repositories;
+
 using LABO_Tools.Filters;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace LABO_API.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize("RequireToken")]
-    [ServiceFilter(typeof(CancellationFilter))]
     [ApiController]
-    public class ProjetController : ControllerBase
+    [ServiceFilter(typeof(CancellationFilter))]
+    [Authorize("RequireAdminRole")]
+    public class AdminProjetController : ControllerBase
     {
-
         #region Dependancy injection
 
         #region Fields
@@ -26,7 +25,7 @@ namespace LABO_API.Controllers
         #endregion
 
 
-        public ProjetController(ProjetRepo projetRepo)
+        public AdminProjetController(ProjetRepo projetRepo)
         {
             _projetRepo = projetRepo;
         }
@@ -39,8 +38,7 @@ namespace LABO_API.Controllers
         /// Récupère la liste des projets.
         /// </summary>
         /// <returns>La liste des projets.</returns>
-        [HttpGet]                           // --> 'NICE HAVE' : PEUT ETRE MASQUER ID_USER ET ID_PROJET
-        [AllowAnonymous]
+        [HttpGet]  
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
@@ -48,7 +46,8 @@ namespace LABO_API.Controllers
         {
             var result = await _projetRepo.Get();
 
-            if(result is not null) return Ok(result);
+            if (result is not null)
+                return Ok(result);
 
             return NoContent();
         }
@@ -60,7 +59,7 @@ namespace LABO_API.Controllers
         /// </summary>
         /// <param name="id">ID du projet à récupérer.</param>
         /// <returns>Les informations du projet.</returns>
-        [HttpGet("{id}")]                // --> 'NICE HAVE' : CHERCHER VIA LE NOM DU PROJET
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
 
@@ -68,44 +67,12 @@ namespace LABO_API.Controllers
         {
             var result = await _projetRepo.GetById(id);
 
-            if(result is not null) return Ok(result);
+            if (result is not null)
+                return Ok(result);
 
             return BadRequest();
         }
 
-
-
-        /// <summary>
-        /// Crée un nouveaux projet.
-        /// </summary>
-        /// <param name="model">Modèle projetDTOCreate contenant les informations du projet à créer.</param>
-        /// <returns>Le modèle de l'utilisateur créé.</returns>
-        [HttpPost]                              // --> 'NICE HAVE' : NOM DU PROJET UNIQUE 
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ServiceFilter(typeof(JwtUserIdentifiantFilter))]
-
-        public async Task<IActionResult> Post([FromBody] ProjetDTOCreate model)
-        {
-            //Récupère l'id de la personne préalablement connecter
-            string? identifiant = HttpContext?.Items["identifiant"]?.ToString();
-            int id = int.Parse(identifiant);
-
-            ProjetDTO projet = new()
-            {
-                IDUtilisateur = id, // -> insère l'id lié a l'utilisateur qui créée le projet
-                Nom = model.Nom,
-                Montant = model.Montant,
-                DateCreation = DateTime.Now
-            };
-
-            if(projet is not null)
-            {
-                if(await _projetRepo.Create(projet))
-                    return CreatedAtAction(nameof(Post), model);
-            }
-            return BadRequest();
-        }
 
 
 
@@ -114,7 +81,7 @@ namespace LABO_API.Controllers
         /// </summary>
         /// <param name="id">ID du projet à supprimer.</param>
         /// <returns>Statut NoContent en cas de suppression réussie.</returns>
-        [HttpPut("{id}")]              // --> 'NICE HAVE' : UN PROJET UNE FOIS VALIDER NE PEUT PLUS ETRE MODIFIER
+        [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
@@ -140,7 +107,7 @@ namespace LABO_API.Controllers
         /// <param name="id">ID du projet à mettre à jour.</param>
         /// <param name="model">Modèle projetDTOCreate contenant les informations mises à jour du projet.</param>
         /// <returns>Le modèle du projet mis à jour.</returns>
-        [HttpDelete("{id}")]  // --> 'NICE HAVE' : LAISSER LA POSIBILITER DE SUPPRIMER ?
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
@@ -148,10 +115,10 @@ namespace LABO_API.Controllers
         {
             bool result = await _projetRepo.Delete(id);
 
-            if (result) return NoContent();
+            if (result)
+                return NoContent();
 
             return BadRequest();
         }
-
     }
 }

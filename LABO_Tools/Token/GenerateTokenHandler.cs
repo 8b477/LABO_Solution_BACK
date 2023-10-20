@@ -19,11 +19,12 @@ namespace LABO_Tools.Token
         /// <param name="name">Nom associé au jeton (généralement l'identifiant de l'utilisateur).</param>
         /// <returns>Une chaîne de caractères représentant le jeton JWT généré.</returns>
  
-        public static string GenerateToken(string identifiant)
+        public static string GenerateToken(string identifiant, string role)
         {
             var token = new JwtSecurityToken(claims: new Claim[]
             {
-                new Claim(ClaimTypes.Name, identifiant)
+                new Claim(ClaimTypes.NameIdentifier, identifiant),
+                new Claim(ClaimTypes.Role, role)
             },
             notBefore: new DateTimeOffset(DateTime.Now).DateTime,
             expires: new DateTimeOffset(DateTime.Now.AddMinutes(60)).DateTime,

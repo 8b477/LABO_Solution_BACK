@@ -2,12 +2,12 @@
 using LABO_DAL.DTO;
 using LABO_Entities;
 using System.Data;
-using System.Reflection;
+
 
 
 namespace LABO_DAL.Repositories
 {
-    public class UserRepo : BaseRepo<UserDTO, UserDTOCreate, UserDTOList, Utilisateur, int>
+    public class UserRepo : BaseRepo<UserDTO, UserDTOCreate, UserDTOList, Utilisateur, int, string>
     {
 
         #region Constructeur
@@ -111,7 +111,8 @@ namespace LABO_DAL.Repositories
                             Nom = user.Nom,
                             Prenom = user.Prenom,
                             Email = "******" + user.Email.Substring((user.Email.Length) / 2),
-                            MotDePasse = "*******"
+                            MotDePasse = "*******",
+                            UserRole = user.UserRole
                         };
                     }
 

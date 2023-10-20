@@ -24,8 +24,12 @@ namespace LABO_Tools.Filters
             // Extrait l'identifiant de l'utilisateur du jeton JWT
             int identifiant = int.Parse(context.HttpContext.User.FindFirst(ClaimTypes.Name).Value);
 
-            // Stocke l'identifiant dans l'objet context.HttpContext.Items pour une utilisation ultérieure dans la même requête.
+            // Extrait le rôle de l'utilisateur du jeton JWT
+            string role = context.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
+
+            // Stocke l'identifiant et le rôle dans l'objet context.HttpContext.Items pour les rendre accessibles aux actions ultérieures dans la même requête si nécessaire.
             context.HttpContext.Items["identifiant"] = identifiant;
+            context.HttpContext.Items["role"] = role;
         }
 
 

@@ -10,11 +10,13 @@ using System.Reflection;
 
 namespace LABO_DAL.Repositories
 {
-    public abstract class BaseRepo<M, MC, MD, T, U> : IRepo<M, MC, MD, T, U>
-     where M : class
+    public abstract class BaseRepo<M, MC, MD, T, U, S> : IRepo<M, MC, MD, T, U, S>
+     where M  : class
      where MC : class
      where MD : class
-     where T : class
+     where T  : class
+     where U  : struct
+     where S  : class
     {
 
         #region Constructor
@@ -117,6 +119,29 @@ namespace LABO_DAL.Repositories
 
 
             return ToModelDisplay(result);
+        }
+
+
+
+        /// <summary>
+        /// Récupère une entrée de la table correspondante au modèle MD par ID.
+        /// </summary>
+        /// <param name="id">ID de l'entrée à récupérer.</param>
+        /// <returns>Un objet de type ModèleDisplay si trouvé, sinon null.</returns>
+        public async Task<IEnumerable<M>?> GetByString(S name)
+        {
+            string tableName = GetTableName();
+
+            string query = $"SELECT * FROM {tableName} WHERE Nom = @Name";
+
+            var result = await _connection.QueryAsync<M>(query, new { Name = name });
+
+            if (result != null && result.Any())
+            {
+                return result;
+            }
+
+            return null;
         }
 
 
