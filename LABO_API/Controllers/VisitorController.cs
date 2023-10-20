@@ -93,9 +93,9 @@ namespace LABO_API.Controllers
             /// <returns>Retourne un token avec des infos sur l'utilisateur</returns>
             [ProducesResponseType(StatusCodes.Status200OK)]
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
-            [HttpPost("Log")]
+            [HttpPost(nameof(Logg))]
 
-            public async Task<IActionResult> Get(UserDTORegister model)
+            public async Task<IActionResult> Logg(UserDTORegister model)
             {
 
             UserDTO? user = await _UserRepo.Logger(model.Email, model.MotDePasse);
