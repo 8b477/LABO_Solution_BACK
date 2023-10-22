@@ -110,8 +110,8 @@ namespace LABO_DAL.Repositories
                             IDUtilisateur = user.IDUtilisateur,
                             Nom = user.Nom,
                             Prenom = user.Prenom,
-                            Email = "******" + user.Email.Substring((user.Email.Length) / 2),
-                            MotDePasse = "*******",
+                            Email = user.Email,
+                            MotDePasse = user.MotDePasse,
                             UserRole = user.UserRole
                         };
                     }
@@ -124,6 +124,9 @@ namespace LABO_DAL.Repositories
         }
 
         #endregion
+
+
+
 
 
     }

@@ -35,20 +35,39 @@ namespace LABO_API.Controllers
         #endregion
 
 
+
+        private int GetLoggedInUserId()
+        {
+            string? identifiant = HttpContext?.Items["identifiant"]?.ToString();
+
+            if (int.TryParse(identifiant, out int id))
+            {
+                return id;
+            }
+
+            return 0;
+            // Gérez ici le cas où la conversion échoue, par exemple en renvoyant une valeur par défaut ou en levant une exception.
+            // Vous pouvez personnaliser cette partie en fonction de votre logique.
+
+            // Exemple : return -1; ou throw new Exception("Impossible de récupérer l'ID de l'utilisateur connecté.");
+        }
+
+
+
+
+
         /// <summary>
         /// Récupère la liste des projets.
         /// </summary>
         /// <returns>La liste des projets.</returns>
-        [HttpGet]                           // --> 'NICE HAVE' : MASQUER ID_USER ET ID_PROJET
-        [AllowAnonymous]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
         public async Task<IActionResult> Get()
         {
             var result = await _projetRepo.Get();
 
-            if(result is not null) return Ok(result);
+            if(result is not null) return Ok(result.Select(x => _projetRepo.ToModelDisplay(x)).ToList());
 
             return NoContent();
         }
@@ -61,29 +80,34 @@ namespace LABO_API.Controllers
         /// </summary>
         /// <param name="model">Modèle projetDTOCreate contenant les informations du projet à créer.</param>
         /// <returns>Le modèle de l'utilisateur créé.</returns>
-        [HttpPost]                              // --> 'NICE HAVE' : NOM DU PROJET UNIQUE + limite de 1projet
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] //--> check de le côté unique du nom du projet ?
         [ServiceFilter(typeof(JwtUserIdentifiantFilter))]
-
         public async Task<IActionResult> Post([FromBody] ProjetDTOCreate model)
         {
             //Récupère l'id de la personne préalablement connecter
-            string? identifiant = HttpContext?.Items["identifiant"]?.ToString();
-            int id = int.Parse(identifiant);
+            int id = GetLoggedInUserId();
 
-            ProjetDTO projet = new()
-            {
-                IDUtilisateur = id, // -> insère l'id lié a l'utilisateur qui créée le projet
-                Nom = model.Nom,
-                Montant = model.Montant,
-                DateCreation = DateTime.Now
-            };
+            // Vérifie si user peut créer un nouveau projet
+            bool result = await _projetRepo.IsUserEligibleForProjectCreation(id);
 
-            if(projet is not null)
+            if (result)
             {
-                if(await _projetRepo.Create(projet))
-                    return CreatedAtAction(nameof(Post), model);
+                //Faire une vers la db en regardant la table projet si un le user de l'id est déjà lié a un projet
+                ProjetDTO projet = new()
+                {
+                    IDUtilisateur = id, // -> insère l'id lié a l'utilisateur qui créée le projet
+                    Nom = model.Nom,
+                    Montant = model.Montant,
+                    DateCreation = DateTime.Now
+                };
+
+                if (projet is not null)
+                {
+                    if (await _projetRepo.Create(projet))
+                        return CreatedAtAction(nameof(Post), model);
+                }
             }
             return BadRequest();
         }
@@ -98,14 +122,12 @@ namespace LABO_API.Controllers
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
         public async Task<IActionResult> Put([FromBody] ProjetDTOCreate model)
         {
             ProjetDTO? user = _projetRepo.ToModelCreate(model);
 
             //Récupère l'id de la personne préalablement connecter
-            string? identifiant = HttpContext?.Items["identifiant"]?.ToString();// ---------> REFACTO
-            int id = int.Parse(identifiant!);
+            int id = GetLoggedInUserId();
 
 
             if (user is not null && user.EstValid == false)
@@ -129,18 +151,23 @@ namespace LABO_API.Controllers
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)] // ============> ADD MODEL ? GENRE MDP + EMAIL
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
-        public async Task<IActionResult> Delete()
+        public async Task<IActionResult> Delete(UserDTORegister model)
         {
-
             //Récupère l'id de la personne préalablement connecter
-            string? identifiant = HttpContext?.Items["identifiant"]?.ToString();// ---------> REFACTO
-            int id = int.Parse(identifiant!);
+            int id = GetLoggedInUserId();
 
-            bool result = await _projetRepo.Delete(id);
+            if (await _projetRepo.AuthenticateUser(model.Email, model.MotDePasse))
+            {
+                ///récupérer le projet lié a la personne !
+                int idProjet = await _projetRepo.GetIdProjetByIdUser(id);
 
-            if (result) return NoContent();
-
+                if (idProjet != 0)
+                {
+                    bool result = await _projetRepo.Delete(idProjet);
+                    if (result)
+                        return NoContent();
+                }
+            }      
             return BadRequest();
         }
 

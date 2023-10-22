@@ -36,9 +36,8 @@ namespace LABO_API.Controllers
         /// </summary>
         /// <returns>La liste des utilisateurs.</returns>
         [HttpGet]
-        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // =====> NICE HAVE : VOIRE TOUTE LES INFOS
 
         public async Task<IActionResult> Get()
         {
@@ -81,31 +80,6 @@ namespace LABO_API.Controllers
             return NotFound();
         }
 
-
-
-
-        /// <summary>
-        /// Crée un nouvel utilisateur.
-        /// </summary>
-        /// <param name="model">Modèle UserDTOCreate contenant les informations de l'utilisateur à créer.</param>
-        /// <returns>Le modèle de l'utilisateur créé.</returns>
-        [HttpPost]
-        [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
-        public async Task<IActionResult?> Post([FromBody] UserDTOCreate model)
-        {
-
-            UserDTO? user = _UserRepo.ToModelCreate(model);
-
-            if (user is not null)
-            {
-                if (await _UserRepo.Create(user))
-                    return CreatedAtAction(nameof(Post), model);
-            }
-            return BadRequest();
-        }
 
 
 
@@ -170,7 +144,7 @@ namespace LABO_API.Controllers
 
 
         /// <summary>
-        /// Permet d'accéder à son profil personnel quand si l'utilisateur est connecté.
+        /// Permet d'accéder à son profil personnel si l'utilisateur est connecté.
         /// </summary>
         /// <returns>Retourne le profil de l'utilisateur sous forme de UserDTO</returns>
         [ServiceFilter(typeof(JwtUserIdentifiantFilter))]

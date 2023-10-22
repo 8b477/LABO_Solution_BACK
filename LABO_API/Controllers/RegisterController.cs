@@ -35,15 +35,31 @@ namespace LABO_API.Controllers
         #endregion
 
 
+        private int GetLoggedInUserId()
+        {
+            string? identifiant = HttpContext?.Items["identifiant"]?.ToString();
+
+            if (int.TryParse(identifiant, out int id))
+            {
+                return id;
+            }
+
+            return 0;
+            // Gérez ici le cas où la conversion échoue, par exemple en renvoyant une valeur par défaut ou en levant une exception.
+            // Vous pouvez personnaliser cette partie en fonction de votre logique.
+
+            // Exemple : return -1; ou throw new Exception("Impossible de récupérer l'ID de l'utilisateur connecté.");
+        }
+
+
+
         /// <summary>
         /// Récupère la liste des utilisateurs.
         /// </summary>
         /// <returns>La liste des utilisateurs.</returns>
         [HttpGet]
-        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
         public async Task<IActionResult> Get()
         {
             var result = await _userRepo.Get();
@@ -60,8 +76,6 @@ namespace LABO_API.Controllers
         }
 
 
-
-
         /// <summary>
         /// Recherche un utilisareur(s).
         /// </summary>
@@ -70,13 +84,16 @@ namespace LABO_API.Controllers
         [HttpGet(nameof(Search))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult?> Search([FromRoute] string name)
+        public async Task<IActionResult?> Search([FromHeader] string name)
         {
             var result = await _userRepo.GetByString(name);
 
-            IEnumerable<UserDTOList?> users = result.Select(u => _userRepo.ToModelDisplay(u)).ToList();
+            if(result is not null)
+            {
+                IEnumerable<UserDTOList?> users = result.Select(u => _userRepo.ToModelDisplay(u)).ToList();
 
-            if (users is not null) return Ok(users);
+                return Ok(users);
+            }
 
             return NotFound();
         }
@@ -91,17 +108,17 @@ namespace LABO_API.Controllers
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
         public async Task<IActionResult?> Delete()
         {
             //Récupère l'id de la personne préalablement connecter
-            string? identifiant = HttpContext?.Items["identifiant"]?.ToString(); // ---------> REFACTO
-            int id = int.Parse(identifiant!);
+            int id = GetLoggedInUserId(); // ----------------------------->FIXE ME je ne recupere pas l'id
 
+            if(id != 0)
+            {
                 bool result = await _userRepo.Delete(id);
-                if (result)
-                    return NoContent();
-            
+                    if (result)
+                        return NoContent();
+            }       
             return BadRequest();
         }
 
@@ -117,16 +134,14 @@ namespace LABO_API.Controllers
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
         public async Task<IActionResult?> Put([FromBody] UserDTOCreate model)
-{
+        {
             //Récupère l'id de la personne préalablement connecter
-            string? identifiant = HttpContext?.Items["identifiant"]?.ToString();
-            int id = int.Parse(identifiant!);
+            int id = GetLoggedInUserId(); // ----------------------------->FIXE ME je ne recupere pas l'id
 
             UserDTO? user = _userRepo.ToModelCreate(model);
 
-            if (user is not null)
+            if (user is not null && id != 0)
             {
                 var result = await _userRepo.Update(id, user);
 
@@ -148,19 +163,20 @@ namespace LABO_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("Profil")]
-
         public async Task<IActionResult> Profil()
         {
             //Récupère l'id de la personne préalablement connecter
-            string? identifiant = HttpContext?.Items["identifiant"]?.ToString();
-            int id = int.Parse(identifiant!);
+            int id = GetLoggedInUserId();
 
-            UserDTOList? user = await _userRepo.GetById(id);
+            if(id != 0)
+            { 
+                UserDTOList? user = await _userRepo.GetById(id);
 
-            if (user is not null)
-                return Ok(user);
+                if (user is not null)
+                    return Ok(user);
+            }
 
-            return Unauthorized();
+            return BadRequest();
         }
     }
 }

@@ -34,15 +34,19 @@ namespace LABO_API.Controllers
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
         public async Task<IActionResult> Get()
         {
             var result = await _projetRepo.Get();
 
             if (result is not null)
+            {
+                var user = result.Select(x => _projetRepo.ToModelDisplay(x));
                 return Ok(result);
+            }
 
             return NoContent();
         }
+
     }
+
 }

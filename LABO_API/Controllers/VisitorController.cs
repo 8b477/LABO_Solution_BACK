@@ -39,7 +39,6 @@ namespace LABO_API.Controllers
             [HttpGet]
             [ProducesResponseType(StatusCodes.Status200OK)]
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
             public async Task<IActionResult> Get()
             {
                 // Test CancellationFilter + Log
@@ -67,9 +66,8 @@ namespace LABO_API.Controllers
             /// <param name="model">Modèle UserDTOCreate contenant les informations de l'utilisateur à créer.</param>
             /// <returns>Le modèle de l'utilisateur créé.</returns>
             [HttpPost]
-            [ProducesResponseType(StatusCodes.Status201Created)]
+            [ProducesResponseType(StatusCodes.Status201Created)] //--> Test le côté unique de l'email ?
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
             public async Task<IActionResult?> Post([FromBody] UserDTOCreate model)
             {
 
@@ -94,7 +92,6 @@ namespace LABO_API.Controllers
             [ProducesResponseType(StatusCodes.Status200OK)]
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
             [HttpPost(nameof(Logg))]
-
             public async Task<IActionResult> Logg(UserDTORegister model)
             {
 
@@ -102,9 +99,16 @@ namespace LABO_API.Controllers
 
             if(user is not null)
             {
-                user.UserRole = "Register";
+                if (user.UserRole == "Visiteur")
+                {
+                    user.UserRole = "Register";
+                    UserDTO? upUser = await _UserRepo.Update(user.IDUtilisateur, user);
 
-                return new ObjectResult(GenerateTokenHandler.GenerateToken(user.IDUtilisateur.ToString(),user.UserRole));
+                    if(upUser is not null)
+                        return new ObjectResult(GenerateTokenHandler.GenerateToken(upUser.IDUtilisateur.ToString(), upUser.UserRole));
+                }
+
+                return new ObjectResult(GenerateTokenHandler.GenerateToken(user.IDUtilisateur.ToString(), user.UserRole));
             }
 
             return BadRequest();

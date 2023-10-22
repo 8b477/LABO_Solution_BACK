@@ -1,7 +1,8 @@
-﻿using LABO_DAL.DTO;
+﻿using Dapper;
+
+using LABO_DAL.DTO;
 using LABO_Entities;
 using System.Data;
-using System.Net.Http;
 
 
 namespace LABO_DAL.Repositories
@@ -21,6 +22,75 @@ namespace LABO_DAL.Repositories
         #endregion
 
 
+        #region Methods
+
+        /// <summary>
+        /// Récupère une entrée 'int' IDUtilisateur pour check ça correspondance en base de donnée dans la table Projet
+        /// </summary>
+        /// <param name="id">Entier correspondant à l'IDUtilisateur à comparé.</param>
+        /// <returns>Retourne 'true' si pas de projet lié à l'utilisateur si non retourne 'false'.</returns>
+        public async Task<bool> IsUserEligibleForProjectCreation(int idUser)
+        {
+            string tableName = GetType().Name; // ProjetRepo
+            string modelName = tableName[..tableName.IndexOf("Repo")]; // Projet
+
+            string query = $"SELECT * FROM {modelName} WHERE IDUtilisateur = @Id";
+            var result = await _connection.QuerySingleOrDefaultAsync<ProjetDTO>(query, new { Id = idUser });
+
+            if (result is null)
+                return true; // true rien n'est trouver donc légitime a la création.
+
+            return false; // fale car un projet lié à l'utilisateur est trouver en base de donnée.
+        }
+
+
+        /// <summary>
+        /// Récupère l'ID d'un projet associé à un utilisateur dans la base de données.
+        /// </summary>
+        /// <param name="idUser">L'ID de l'utilisateur pour lequel on souhaite obtenir l'ID du projet.</param>
+        /// <returns>Retourne l'ID du projet s'il est associé à l'utilisateur, sinon retourne 0 s'il n'y a pas de correspondance.</returns>
+        public async Task<int> GetIdProjetByIdUser(int idUser)
+        {
+            string tableName = GetType().Name; // ProjetRepo
+            string modelName = tableName[..tableName.IndexOf("Repo")]; // Projet
+
+            string query = $"SELECT * FROM {modelName} WHERE IDUtilisateur = @Id";
+            var result = await _connection.QuerySingleOrDefaultAsync<ProjetDTO>(query, new { Id = idUser });
+
+            if (result is null)
+                return result.IDProjet; // renvoie l'id trouver.
+
+            return 0; // pas de correpondance renvoie donc zero.
+        }
+
+
+
+        /// <summary>
+        /// Vérifie l'authentification d'un utilisateur en comparant le mot de passe en clair avec le mot de passe haché stocké en base de données.
+        /// </summary>
+        /// <param name="email">L'adresse e-mail de l'utilisateur.</param>
+        /// <param name="password">Le mot de passe en clair à vérifier.</param>
+        /// <returns>Retourne 'true' si l'authentification réussit, sinon 'false'.</returns>
+        public async Task<bool> AuthenticateUser(string email, string motDePasse)
+        {
+            string query = "SELECT MotDePasse FROM Utilisateur WHERE Email = @Email";
+
+            string? hashedPassword = await _connection.QueryFirstOrDefaultAsync<string>(query, new { Email = email });
+
+            if (hashedPassword != null)
+            {
+                // Utilise BCrypt.Verify pour comparer le mot de passe en clair avec le hachage en base de données
+                bool isPasswordValid = BC.Verify(motDePasse, hashedPassword); // BC => BCrypt
+
+                if(isPasswordValid) return true;
+            }
+            return false;
+        }
+
+
+        #endregion
+
+
         #region Mapper
 
         /// <summary>
@@ -28,15 +98,12 @@ namespace LABO_DAL.Repositories
         /// </summary>
         /// <param name="model">Le modèle de création de projet à convertir.</param>
         /// <returns>Le modèle de projet correspondant ou null si le modèle d'entrée est null.</returns>
-
         public override ProjetDTO? ToModelCreate(ProjetDTOCreate model)
         {
             if (model is not null)
             {
                 return new ProjetDTO()
                 {
-                    //IDProjet = model.IDUtilisateur, => Je ne souhaite pas renseigner d'ID à la création
-                    //IDUtilisateur = model.IDUtilisateur, => Je ne souhaite pas renseigner d'ID à la création
                     Nom = model.Nom,
                     Montant = model.Montant,
                     DateCreation = DateTime.Today
@@ -51,15 +118,12 @@ namespace LABO_DAL.Repositories
         /// </summary>
         /// <param name="model">Le modèle de projet à convertir.</param>
         /// <returns>Le modèle d'affichage de projet correspondant ou null si le modèle d'entrée est null.</returns>
-
         public override ProjetDTOList? ToModelDisplay(ProjetDTO model)
         {
             if (model is not null)
             {
                 return new ProjetDTOList()
                 {
-                    IDProjet = model.IDProjet,
-                    IDUtilisateur = model.IDUtilisateur,
                     Nom = model.Nom,
                     Montant = model.Montant,
                     DateCreation = model.DateCreation,

@@ -25,7 +25,7 @@ namespace LABO_Tools.Services
                     {
                         policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
                         policy.RequireAuthenticatedUser();
-                        policy.RequireRole("Visiteur"); // Spécifie le rôle requis
+                        policy.RequireRole("Register"); // Spécifie le rôle requis
                     });
 
                     // Politique pour les utilisateurs avec le rôle "Admin"
