@@ -1,5 +1,8 @@
 ﻿using LABO_DAL.Interfaces;
 using LABO_DAL.Repositories;
+using LABO_DAL.Services;
+using LABO_DAL.Services.Interfaces;
+
 using LABO_Tools.Filters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,20 +24,36 @@ namespace LABO_Tools.Services
 
         public static void ConfigureDependencyInjection(IServiceCollection services, IConfiguration configuration)
         {
-            // Lire la chaîne de connexion depuis appsettings.json
+
+            #region Fields
             string? connectionString = configuration.GetConnectionString("dev");
+            #endregion
 
-            // Injecter la connexion par défaut pour chaque utilisation
+
+            #region Injection de dependance
+
+            #region User
             services.AddScoped<IUserRepo, UserRepo>(provider => new UserRepo(new SqlConnection(connectionString)));
+            #endregion
 
+            #region Contrepartie
+            services.AddScoped<IContrepartieRepo, ContrepartieRepo>(provider => new ContrepartieRepo(new SqlConnection(connectionString)));
+            #endregion
+
+            #region Projet
+            services.AddScoped<IProjetService, ProjetService>();
+            
             services.AddScoped<IProjetRepo, ProjetRepo>(provider => new ProjetRepo(new SqlConnection(connectionString)));
+            #endregion
 
-            services.AddScoped<IContrepartieRepo,ContrepartieRepo>(provider => new ContrepartieRepo(new SqlConnection(connectionString)));
+            #endregion
 
 
-            // Enregistre un filtre CancellationFilter pour être utilisé par les contrôleurs.
+            #region Filtre
             services.AddScoped<CancellationFilter>();
-            services.AddScoped<JwtUserIdentifiantFilter>();
+            services.AddScoped<JwtUserIdentifiantFilter>(); 
+            #endregion
+
         }
     }
 

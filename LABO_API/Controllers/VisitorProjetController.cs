@@ -1,6 +1,8 @@
 ﻿using LABO_DAL.DTO;
 using LABO_DAL.Interfaces;
-using LABO_DAL.Repositories;
+using LABO_DAL.Services;
+using LABO_DAL.Services.Interfaces;
+
 using LABO_Tools.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +11,7 @@ namespace LABO_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     [ServiceFilter(typeof(CancellationFilter))]
     public class VisitorProjetController : ControllerBase
     {
@@ -16,17 +19,13 @@ namespace LABO_API.Controllers
 
         #region Fields
 
-        private readonly IProjetRepo _projetRepo;
-        private readonly IContrepartieRepo _contrepartieRepo;
-        private readonly IUserRepo _userRepo;
+        private readonly IProjetService _projetService;
 
         #endregion
 
-        public VisitorProjetController(IProjetRepo projetRepo,IContrepartieRepo contrepartie, IUserRepo userRepo)
+        public VisitorProjetController(IProjetService projetService)
         {
-            _projetRepo = projetRepo;
-            _contrepartieRepo = contrepartie;
-            _userRepo = userRepo;
+            _projetService = projetService;
         }
 
         #endregion
@@ -37,51 +36,32 @@ namespace LABO_API.Controllers
         /// </summary>
         /// <returns>La liste des projets.</returns>
         [HttpGet]
-        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Get(int page = 1, int pageSize = 10)
         {
-            var projets = await _projetRepo.GetPagedProjects(page, pageSize);
+            var projetsDetails = await _projetService.GetAllProjetDetails(page,pageSize);
 
-            if (projets is not null)
-            {
-                var projetModels = projets.Select(projet =>
-                {
-                    var contreparties = _contrepartieRepo.GetContrepartieByProjectID(projet.IDUtilisateur);
-                    var owner = _userRepo.GetById(projet.IDUtilisateur);
-
-                    var projetModel = new
-                    {
-                        Projet = new
-                        {
-                            Nom = projet.Nom,
-                            MontantTotal = projet.Montant,
-                            DateCreation = projet.DateCreation,
-                            DateMiseEnLigne = projet.DateMiseEnLigne,
-                            DateDeFin = projet.DateDeFin,
-                            Proprietaire = new
-                            {
-                                Nom = owner?.Result?.Nom ?? "", 
-                                Prenom = owner?.Result?.Prenom ?? "",
-                            },
-                        },
-                        Contreparties = contreparties?.Result?
-                            .Select(ctp => new
-                            {
-                                Description = ctp.Description,
-                                Montant = ctp.Montant,
-                            }),
-                    };
-
-                    return projetModel;
-                });
-
-                return Ok(projetModels);
-            }
+            if (projetsDetails.Any())
+                return Ok(projetsDetails);
 
             return NoContent();
-        } // --> FIX ME : CONTREPARTIE NE S AFFICHE PAS
+        }
+
+
+
+        [HttpGet("{nameOfProject}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> Get(string nameOfProject)
+        {
+            var projets = await _projetService.GetProjetDetails(nameOfProject);
+
+            if (projets.Any())
+                return Ok(projets);
+            
+            return NoContent();
+        }
 
 
 
