@@ -1,5 +1,7 @@
 ﻿using Dapper;
 using LABO_DAL.DTO;
+using LABO_DAL.Interfaces;
+
 using LABO_Entities;
 using System.Data;
 
@@ -7,7 +9,7 @@ using System.Data;
 
 namespace LABO_DAL.Repositories
 {
-    public class UserRepo : BaseRepo<UserDTO, UserDTOCreate, UserDTOList, Utilisateur, int, string>
+    public class UserRepo : BaseRepo<UserDTO, UserDTOCreate, UserDTOList, Utilisateur, int, string>, IUserRepo
     {
 
         #region Constructeur
@@ -124,10 +126,5 @@ namespace LABO_DAL.Repositories
         }
 
         #endregion
-
-
-
-
-
     }
 }

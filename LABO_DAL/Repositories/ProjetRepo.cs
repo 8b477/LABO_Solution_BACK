@@ -1,13 +1,13 @@
 ﻿using Dapper;
-
 using LABO_DAL.DTO;
+using LABO_DAL.Interfaces;
 using LABO_Entities;
 using System.Data;
 
 
 namespace LABO_DAL.Repositories
 {
-    public class ProjetRepo : BaseRepo<ProjetDTO, ProjetDTOCreate, ProjetDTOList, Projet, int, string>
+    public class ProjetRepo : BaseRepo<ProjetDTO, ProjetDTOCreate, ProjetDTOList, Projet, int, string>, IProjetRepo
     {
 
         #region Constructeur
@@ -57,7 +57,7 @@ namespace LABO_DAL.Repositories
             string query = $"SELECT * FROM {modelName} WHERE IDUtilisateur = @Id";
             var result = await _connection.QuerySingleOrDefaultAsync<ProjetDTO>(query, new { Id = idUser });
 
-            if (result is null)
+            if (result is not null)
                 return result.IDProjet; // renvoie l'id trouver.
 
             return 0; // pas de correpondance renvoie donc zero.
@@ -87,6 +87,29 @@ namespace LABO_DAL.Repositories
             return false;
         }
 
+
+
+        public async Task<IEnumerable<ProjetDTO>> GetPagedProjects(int page, int pageSize)
+        {
+            string tableName = "Projet";
+
+            // Calcule l'offset pour la pagination
+            int offset = (page - 1) * pageSize;
+
+            // Utilise Dapper pour exécuter la requête SQL en utilisant une chaîne interpolée pour ajouter les paramètres dynamiques
+            string query = $@"
+                                SELECT *
+                                FROM {tableName}
+                                ORDER BY DateCreation DESC
+                                OFFSET @Offset ROWS
+                                FETCH NEXT @PageSize ROWS ONLY";
+
+            var parameters = new { PageSize = pageSize, Offset = offset };
+
+            var result = await _connection.QueryAsync<ProjetDTO>(query, parameters);
+
+            return result;
+        }
 
         #endregion
 

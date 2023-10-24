@@ -1,4 +1,5 @@
-﻿using LABO_DAL.Repositories;
+﻿using LABO_DAL.Interfaces;
+using LABO_DAL.Repositories;
 using LABO_Tools.Filters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,10 +24,12 @@ namespace LABO_Tools.Services
             // Lire la chaîne de connexion depuis appsettings.json
             string? connectionString = configuration.GetConnectionString("dev");
 
-
             // Injecter la connexion par défaut pour chaque utilisation
-            services.AddScoped<UserRepo>(provider => new UserRepo(new SqlConnection(connectionString)));
-            services.AddScoped<ProjetRepo>(provider => new ProjetRepo(new SqlConnection(connectionString)));
+            services.AddScoped<IUserRepo, UserRepo>(provider => new UserRepo(new SqlConnection(connectionString)));
+
+            services.AddScoped<IProjetRepo, ProjetRepo>(provider => new ProjetRepo(new SqlConnection(connectionString)));
+
+            services.AddScoped<IContrepartieRepo,ContrepartieRepo>(provider => new ContrepartieRepo(new SqlConnection(connectionString)));
 
 
             // Enregistre un filtre CancellationFilter pour être utilisé par les contrôleurs.

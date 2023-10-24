@@ -1,4 +1,5 @@
 ﻿using LABO_DAL.DTO;
+using LABO_DAL.Interfaces;
 using LABO_DAL.Repositories;
 using LABO_Tools.Filters;
 
@@ -20,13 +21,13 @@ namespace LABO_API.Controllers
         #region Fields
 
 
-        private readonly ProjetRepo _projetRepo;
+        private readonly IProjetRepo _projetRepo;
 
 
         #endregion
 
 
-        public RegisterProjetController(ProjetRepo projetRepo)
+        public RegisterProjetController(IProjetRepo projetRepo)
         {
             _projetRepo = projetRepo;
         }
@@ -61,14 +62,17 @@ namespace LABO_API.Controllers
         /// </summary>
         /// <returns>La liste des projets.</returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)] //--> consulter son propre projet ?
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get()
         {
             var result = await _projetRepo.Get();
 
-            if(result is not null) return Ok(result.Select(x => _projetRepo.ToModelDisplay(x)).ToList());
-
+            if (result is not null)
+            {
+                var user = result.Select(x => _projetRepo.ToModelDisplay(x));
+                return Ok(result);
+            }
             return NoContent();
         }
 
@@ -94,7 +98,7 @@ namespace LABO_API.Controllers
 
             if (result)
             {
-                //Faire une vers la db en regardant la table projet si un le user de l'id est déjà lié a un projet
+                //Faire une vérif vers la db en regardant la table projet si un le user de l'id est déjà lié a un projet
                 ProjetDTO projet = new()
                 {
                     IDUtilisateur = id, // -> insère l'id lié a l'utilisateur qui créée le projet
@@ -106,7 +110,7 @@ namespace LABO_API.Controllers
                 if (projet is not null)
                 {
                     if (await _projetRepo.Create(projet))
-                        return CreatedAtAction(nameof(Post), model);
+                        return CreatedAtAction(nameof(Post), projet);
                 }
             }
             return BadRequest();
@@ -154,9 +158,11 @@ namespace LABO_API.Controllers
         public async Task<IActionResult> Delete(UserDTORegister model)
         {
             //Récupère l'id de la personne préalablement connecter
-            int id = GetLoggedInUserId();
+            //int id = GetLoggedInUserId();
 
-            if (await _projetRepo.AuthenticateUser(model.Email, model.MotDePasse))
+            int id = HttpContext.Session.GetInt32("ID") ?? 0;
+
+            if (await _projetRepo.AuthenticateUser(model.Email, model.MotDePasse) && id != 0)
             {
                 ///récupérer le projet lié a la personne !
                 int idProjet = await _projetRepo.GetIdProjetByIdUser(id);

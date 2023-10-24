@@ -1,4 +1,5 @@
 ﻿using LABO_DAL.DTO;
+using LABO_DAL.Interfaces;
 using LABO_DAL.Repositories;
 
 using LABO_Tools.Filters;
@@ -14,18 +15,19 @@ namespace LABO_API.Controllers
     [Authorize("RequireAdminRole")]
     public class AdminProjetController : ControllerBase
     {
+
         #region Dependancy injection
 
         #region Fields
 
 
-        private readonly ProjetRepo _projetRepo;
+        private readonly IProjetRepo _projetRepo;
 
 
         #endregion
 
 
-        public AdminProjetController(ProjetRepo projetRepo)
+        public AdminProjetController(IProjetRepo projetRepo)
         {
             _projetRepo = projetRepo;
         }

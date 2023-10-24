@@ -1,4 +1,5 @@
 ﻿using LABO_DAL.DTO;
+using LABO_DAL.Interfaces;
 using LABO_DAL.Repositories;
 using LABO_Tools.Filters;
 
@@ -19,13 +20,13 @@ namespace LABO_API.Controllers
 
         #region Fields
 
-        private readonly UserRepo _userRepo;
+        private readonly IUserRepo _userRepo;
 
         #endregion
 
         #region Constructeur
 
-        public RegisterController(UserRepo userRepo)
+        public RegisterController(IUserRepo userRepo)
         {
             _userRepo = userRepo;
         }
@@ -111,11 +112,13 @@ namespace LABO_API.Controllers
         public async Task<IActionResult?> Delete()
         {
             //Récupère l'id de la personne préalablement connecter
-            int id = GetLoggedInUserId(); // ----------------------------->FIXE ME je ne recupere pas l'id
+            //int id = GetLoggedInUserId(); // ------------------> FIXE ME je ne recupere pas l'id
 
-            if(id != 0)
+            int id = HttpContext.Session.GetInt32("ID") ?? 0;
+
+            if (id != 0)
             {
-                bool result = await _userRepo.Delete(id);
+                bool result = await _userRepo.Delete(id); // ----> Bien delete mais toujours accès au endpoint, forcer la déco du user
                     if (result)
                         return NoContent();
             }       
@@ -137,7 +140,11 @@ namespace LABO_API.Controllers
         public async Task<IActionResult?> Put([FromBody] UserDTOCreate model)
         {
             //Récupère l'id de la personne préalablement connecter
-            int id = GetLoggedInUserId(); // ----------------------------->FIXE ME je ne recupere pas l'id
+            //int id = GetLoggedInUserId(); // ----------------------------->FIXE ME je ne recupere pas l'id
+
+
+            int id = HttpContext.Session.GetInt32("ID") ?? 0;
+
 
             UserDTO? user = _userRepo.ToModelCreate(model);
 

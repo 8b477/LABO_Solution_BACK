@@ -1,4 +1,5 @@
 ﻿using LABO_DAL.DTO;
+using LABO_DAL.Interfaces;
 using LABO_DAL.Repositories;
 using LABO_Tools.Filters;
 using LABO_Tools.Token;
@@ -17,14 +18,14 @@ namespace LABO_API.Controllers
 
             #region Dependancy injection
 
-            private readonly UserRepo _UserRepo;
+            private readonly IUserRepo _UserRepo;
 
             /// <summary>
             /// Initialise une nouvelle instance de la classe UserController avec l'injection de dépendance de UserRepo.
             /// Ajoute aussi un système de log
             /// </summary>
             /// <param name="userRepo">Instance de UserRepo pour interagir avec les données utilisateur.</param>
-            public VisitorController(UserRepo userRepo)
+            public VisitorController(IUserRepo userRepo)
             {
                 _UserRepo = userRepo;
             }
@@ -99,6 +100,15 @@ namespace LABO_API.Controllers
 
             if(user is not null)
             {
+
+                //add some data in session
+                HttpContext.Session.SetInt32("ID", user.IDUtilisateur);
+                HttpContext.Session.SetString("Role",user.UserRole);
+
+                int id = HttpContext.Session.GetInt32("ID") ?? 0;
+                string? role = HttpContext.Session.GetString("Role");
+
+
                 if (user.UserRole == "Visiteur")
                 {
                     user.UserRole = "Register";

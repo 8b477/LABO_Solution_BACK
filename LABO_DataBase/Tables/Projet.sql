@@ -1,6 +1,6 @@
 ﻿CREATE TABLE Projet
 (
-   IDProjet  INT IDENTITY,
+   IDProjet INT IDENTITY,
    Nom VARCHAR(100) UNIQUE NOT NULL,
    Montant DECIMAL(10,2) NOT NULL,
    DateCreation DATE NOT NULL,

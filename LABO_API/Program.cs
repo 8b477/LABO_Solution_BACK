@@ -35,6 +35,16 @@ builder.Host.UseSerilog();
 //******************************************************************************************
 
 
+//******************ADD SESSION**************************
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = "LABO.Session";
+    options.IdleTimeout = TimeSpan.FromSeconds(60);
+    options.Cookie.IsEssential = true;
+});
+//********************************************************
 
 var app = builder.Build();
 
@@ -54,6 +64,7 @@ app.UseMiddleware<AuthorizeAllEndpointsMiddleware>();
 //******  ADD   ******* 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
 //*********************
 
 
