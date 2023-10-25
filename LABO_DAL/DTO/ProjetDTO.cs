@@ -1,10 +1,11 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+
 namespace LABO_DAL.DTO
 {
     /// <summary>
     /// ProjetDTO est une classe qui représente la table en base de donnée.
     /// </summary>
-
     public record class ProjetDTO
     {
         [ColumnName(nameof(IDProjet))]
@@ -36,13 +37,16 @@ namespace LABO_DAL.DTO
     /// <summary>
     /// ProjetDTOCreate est une classe pour la création de nouveaux projets.
     /// </summary>
-
     public record class ProjetDTOCreate
     {
-
+        [Required]
+        [MinLength(4,ErrorMessage = "Champ requis, 5 cactères minimum attendu pour le Nom du projet")]
+        [MaxLength(20,ErrorMessage = "Champ requis, 20 caractères maximum attendu pour le Nom du projet")]
         [ColumnName(nameof(Nom))]
         public string Nom { get; set; }
 
+        [Required]
+        [Range(0,20000,ErrorMessage = "Champ requis, le montant ne peux pas être négatif et ne peux être supérieur à 20 000$")]
         [ColumnName(nameof(Montant))]
         public decimal Montant { get; set; }
 
@@ -52,7 +56,6 @@ namespace LABO_DAL.DTO
     /// <summary>
     /// ProjetDTOList est une classe pour afficher des projets.
     /// </summary>
-
     public record class ProjetDTOList
     {
         [ColumnName(nameof(IDProjet))]

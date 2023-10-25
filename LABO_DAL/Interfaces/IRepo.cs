@@ -10,9 +10,8 @@ namespace LABO_DAL.Interfaces
     /// <typeparam name="M">Le modèle de données de base (entité en base de données).</typeparam>
     /// <typeparam name="MC">Le modèle de données pour la création ou la mise à jour.</typeparam>
     /// <typeparam name="MD">Le modèle de données pour l'affichage.</typeparam>
-    /// <typeparam name="T">Un type générique.</typeparam>
+    /// <typeparam name="T">Représente l'entité en base de donnée.</typeparam>
     /// <typeparam name="U">Le type de l'identifiant unique des données.</typeparam>
-
     public interface IRepo<M, MC, MD, T, U, S>
         where M  : class
         where MC : class
@@ -26,7 +25,6 @@ namespace LABO_DAL.Interfaces
         /// </summary>
         /// <param name="item">Le modèle de données de base à créer.</param>
         /// <returns>Une tâche qui représente l'opération de création.</returns>
-
         Task<bool> Create(M item);
 
 
@@ -34,7 +32,6 @@ namespace LABO_DAL.Interfaces
         /// Récupère tous les éléments en utilisant le modèle de données de base.
         /// </summary>
         /// <returns>Une tâche qui renvoie une collection d'éléments.</returns>
-
         Task<IEnumerable<M>> Get();
 
 
@@ -43,7 +40,6 @@ namespace LABO_DAL.Interfaces
         /// </summary>
         /// <param name="id">L'identifiant unique de l'élément à récupérer.</param>
         /// <returns>Une tâche qui renvoie le modèle de données d'affichage correspondant.</returns>
-
         Task<MD?> GetById(U id);
 
 
@@ -52,7 +48,6 @@ namespace LABO_DAL.Interfaces
         /// </summary>
         /// <param name="name">Nom de l'élément à récupérer.</param>
         /// <returns>Une tâche qui renvoie le modèle de données d'affichage correspondant.</returns>
-
         Task<IEnumerable<M>?> GetByString(S name);
 
 
@@ -62,7 +57,6 @@ namespace LABO_DAL.Interfaces
         /// <param name="id">L'identifiant unique de l'élément à mettre à jour.</param>
         /// <param name="item">Le modèle de données de base à utiliser pour la mise à jour.</param>
         /// <returns>Une tâche qui renvoie le modèle de données de base mis à jour.</returns>
-
         Task<M?> Update(U id, M item);
 
 
@@ -71,7 +65,6 @@ namespace LABO_DAL.Interfaces
         /// </summary>
         /// <param name="id">L'identifiant unique de l'élément à supprimer.</param>
         /// <returns>Une tâche qui représente l'opération de suppression.</returns>
-
         Task<bool> Delete(U id);
 
 

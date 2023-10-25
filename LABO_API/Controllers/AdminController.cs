@@ -1,7 +1,6 @@
 ﻿using LABO_DAL.DTO;
 using LABO_DAL.Repositories;
 using LABO_Tools.Filters;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,23 +37,27 @@ namespace LABO_API.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // =====> NICE HAVE : VOIRE TOUTE LES INFOS
-
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get()
         {
-            // Test CancellationFilter + Log
-            // await Task.Delay(10000);  // => Simule une longue attente 
-
-            var result = await _UserRepo.Get();
-
-            if (result is not null)
+            try
             {
-                // Converti les utilisateurs pour masqué le champ MotDePasse (sans éffacer les datas)
-                var users = result.Select(u => _UserRepo.ToModelDisplay(u)).ToList();
+                var result = await _UserRepo.Get();
 
-                return Ok(users);
+                if (result is not null)
+                {
+                    var users = result.Select(u => _UserRepo.ToModelDisplay(u)).ToList();
 
+                    return Ok(users);
+
+                }
+                return BadRequest();
             }
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Une erreur s'est produite lors de la récupération des utilisateurs. Source :" + ex.Source);
+            }
         }
 
 
@@ -68,16 +71,24 @@ namespace LABO_API.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult?> Get(int id)
         {
 
-            var result = await _UserRepo.GetById(id);
+            try
+            {
+                var result = await _UserRepo.GetById(id);
 
-            if (result is not null)
-                return Ok(result);
+                if (result is not null)
+                    return Ok(result);
 
-            return NotFound();
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Une erreur s'est produite lors de la récupération d'un utilisateur par son id. Source :" + ex.Source);
+            }
         }
 
 
@@ -92,23 +103,30 @@ namespace LABO_API.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult?> Delete(int id)
         {
-
-            //Récupère l'id de la personne préalablement connecter
-            string? identifiant = HttpContext?.Items["identifiant"]?.ToString();
-            int identifiantInt = int.Parse(identifiant!);
-
-            UserDTOList? user = await _UserRepo.GetById(identifiantInt);
-
-            if (user is not null && user.UserRole == "Admin")
+            try
             {
-                bool result = await _UserRepo.Delete(id);
-                if (result)
-                    return NoContent();
+                //Récupère l'id de la personne préalablement connecter
+                string? identifiant = HttpContext?.Items["identifiant"]?.ToString();
+                int identifiantInt = int.Parse(identifiant!);
+
+                UserDTOList? user = await _UserRepo.GetById(identifiantInt);
+
+                if (user is not null && user.UserRole == "Admin")
+                {
+                    bool result = await _UserRepo.Delete(id);
+                    if (result)
+                        return NoContent();
+                }
+                return BadRequest();
             }
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Une erreur s'est produite lors de la suppresion d'un utilisateur. Source :" + ex.Source);
+            }
         }
 
 
@@ -123,21 +141,27 @@ namespace LABO_API.Controllers
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult?> Put([FromRoute] int id, [FromBody] UserDTOCreate model)
         {
-
-            UserDTO? user = _UserRepo.ToModelCreate(model);
-
-            if (user is not null)
+            try
             {
-                var result = await _UserRepo.Update(id, user);
+                UserDTO? user = _UserRepo.ToModelCreate(model);
 
-                if (result is not null)
-                    return Ok(model);
+                if (user is not null)
+                {
+                    var result = await _UserRepo.Update(id, user);
+
+                    if (result is not null)
+                        return Ok(model);
+                }
+                return BadRequest();
             }
-
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Une erreur s'est produite lors de la mise à jour d'un utilisateur. Source :" + ex.Source);
+            }
         }
 
 
@@ -150,20 +174,28 @@ namespace LABO_API.Controllers
         [ServiceFilter(typeof(JwtUserIdentifiantFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("Profil")]
-
         public async Task<IActionResult> Profil()
         {
-            //Récupère l'id de la personne préalablement connecter
-            string? identifiant = HttpContext?.Items["identifiant"]?.ToString();
-            int id = int.Parse(identifiant!);
+            try
+            {
+                //Récupère l'id de la personne préalablement connecter
+                string? identifiant = HttpContext?.Items["identifiant"]?.ToString();
+                int id = int.Parse(identifiant!);
 
-            UserDTOList? user = await _UserRepo.GetById(id);
+                UserDTOList? user = await _UserRepo.GetById(id);
 
-            if (user is not null)
-                return Ok(user);
+                if (user is not null)
+                    return Ok(user);
 
-            return Unauthorized();
+                return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Une erreur s'est produite lors de la récupération du profil. Source :" + ex.Source);
+            }
         }
     }
 }

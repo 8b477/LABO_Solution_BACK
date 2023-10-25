@@ -1,9 +1,6 @@
 ﻿using LABO_DAL.DTO;
 using LABO_DAL.Interfaces;
-using LABO_DAL.Repositories;
-
 using LABO_Tools.Filters;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,15 +40,23 @@ namespace LABO_API.Controllers
         [HttpGet]  
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get()
         {
-            var result = await _projetRepo.Get();
+            try
+            {
+                var result = await _projetRepo.Get();
 
-            if (result is not null)
-                return Ok(result);
+                if (result is not null)
+                    return Ok(result);
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Une erreur s'est produite lors de la récupération des projets. Source :" + ex.Source);
+            }
         }
 
 
@@ -64,63 +69,86 @@ namespace LABO_API.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get(int id)
         {
-            var result = await _projetRepo.GetById(id);
+            try
+            {
+                var result = await _projetRepo.GetById(id);
 
-            if (result is not null)
-                return Ok(result);
+                if (result is not null)
+                    return Ok(result);
 
-            return BadRequest();
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Une erreur s'est produite lors de la récupération d'un projet via son id. Source :" + ex.Source);
+            }
         }
 
 
 
 
         /// <summary>
-        /// Supprime un projet par son ID.
+        /// Met à jour un projet par son ID.
         /// </summary>
-        /// <param name="id">ID du projet à supprimer.</param>
-        /// <returns>Statut NoContent en cas de suppression réussie.</returns>
+        /// <param name="id">ID du projet à mettre à jour.</param>
+        /// <returns>Statut Ok() en cas de mise à jour réussi.</returns>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Put(int id, [FromBody] ProjetDTOCreate model)
         {
-            ProjetDTO? user = _projetRepo.ToModelCreate(model);
-
-            if (user is not null)
+            try
             {
-                var result = await _projetRepo.Update(id, user);
+                ProjetDTO? user = _projetRepo.ToModelCreate(model);
 
-                if (result is not null)
-                    return Ok(model);
+                if (user is not null)
+                {
+                    var result = await _projetRepo.Update(id, user);
+
+                    if (result is not null)
+                        return Ok(model);
+                }
+                return BadRequest();
             }
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Une erreur s'est produite lors de la mise à jour d'un projet. Source :" + ex.Source);
+            }
         }
 
 
 
         /// <summary>
-        /// Met à jour d'un projet par son ID.
+        /// Supprime d'un projet par son ID.
         /// </summary>
-        /// <param name="id">ID du projet à mettre à jour.</param>
-        /// <param name="model">Modèle projetDTOCreate contenant les informations mises à jour du projet.</param>
-        /// <returns>Le modèle du projet mis à jour.</returns>
+        /// <param name="id">ID du projet à suprrimer.</param>
+        /// <returns>Retourne NoContent() si réussi.</returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(int id)
         {
-            bool result = await _projetRepo.Delete(id);
+            try
+            {
+                bool result = await _projetRepo.Delete(id);
 
-            if (result)
-                return NoContent();
+                if (result)
+                    return NoContent();
 
-            return BadRequest();
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Une erreur s'est produite lors de la suppresion du projet par son ID. Source :" + ex.Source);
+            }
         }
     }
 }

@@ -32,7 +32,6 @@ namespace LABO_Tools.Middleware
         /// Cela est utilisé pour forcer l'authentification sur les endpoints non publics.
         /// </summary>
         /// <param name="context">Le contexte de la requête HTTP.</param>
-
         public async Task Invoke(HttpContext context)
         {
             // Vérifiez si l'endpoint est marqué comme public

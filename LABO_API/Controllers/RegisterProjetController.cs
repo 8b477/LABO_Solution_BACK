@@ -45,14 +45,8 @@ namespace LABO_API.Controllers
             {
                 return id;
             }
-
             return 0;
-            // Gérez ici le cas où la conversion échoue, par exemple en renvoyant une valeur par défaut ou en levant une exception.
-            // Vous pouvez personnaliser cette partie en fonction de votre logique.
-
-            // Exemple : return -1; ou throw new Exception("Impossible de récupérer l'ID de l'utilisateur connecté.");
         }
-
 
 
 
@@ -64,16 +58,25 @@ namespace LABO_API.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)] //--> consulter son propre projet ?
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get()
         {
-            var result = await _projetRepo.Get();
-
-            if (result is not null)
+            try
             {
-                var user = result.Select(x => _projetRepo.ToModelDisplay(x));
-                return Ok(result);
+                var result = await _projetRepo.Get();
+
+                if (result is not null)
+                {
+                    var user = result.Select(x => _projetRepo.ToModelDisplay(x));
+                    return Ok(result);
+                }
+                return NoContent();
             }
-            return NoContent();
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Une erreur s'est produite lors de la récupération des projets. Source :" + ex.Source);
+            }
         }
 
 
@@ -87,33 +90,42 @@ namespace LABO_API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] //--> check de le côté unique du nom du projet ?
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ServiceFilter(typeof(JwtUserIdentifiantFilter))]
         public async Task<IActionResult> Post([FromBody] ProjetDTOCreate model)
         {
-            //Récupère l'id de la personne préalablement connecter
-            int id = GetLoggedInUserId();
-
-            // Vérifie si user peut créer un nouveau projet
-            bool result = await _projetRepo.IsUserEligibleForProjectCreation(id);
-
-            if (result)
+            try
             {
-                //Faire une vérif vers la db en regardant la table projet si un le user de l'id est déjà lié a un projet
-                ProjetDTO projet = new()
-                {
-                    IDUtilisateur = id, // -> insère l'id lié a l'utilisateur qui créée le projet
-                    Nom = model.Nom,
-                    Montant = model.Montant,
-                    DateCreation = DateTime.Now
-                };
+                //Récupère l'id de la personne préalablement connecter
+                int id = GetLoggedInUserId();
 
-                if (projet is not null)
+                // Vérifie si user peut créer un nouveau projet
+                bool result = await _projetRepo.IsUserEligibleForProjectCreation(id);
+
+                if (result)
                 {
-                    if (await _projetRepo.Create(projet))
-                        return CreatedAtAction(nameof(Post), projet);
+                    //Faire une vérif vers la db en regardant la table projet si un le user de l'id est déjà lié a un projet
+                    ProjetDTO projet = new()
+                    {
+                        IDUtilisateur = id, // -> insère l'id lié a l'utilisateur qui créée le projet
+                        Nom = model.Nom,
+                        Montant = model.Montant,
+                        DateCreation = DateTime.Now
+                    };
+
+                    if (projet is not null)
+                    {
+                        if (await _projetRepo.Create(projet))
+                            return CreatedAtAction(nameof(Post), projet);
+                    }
                 }
+                return BadRequest();
             }
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Une erreur s'est produite lors de l'ajout d'un projet. Source :" + ex.Source);
+            }
         }
 
 
@@ -126,22 +138,31 @@ namespace LABO_API.Controllers
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Put([FromBody] ProjetDTOCreate model)
         {
-            ProjetDTO? user = _projetRepo.ToModelCreate(model);
-
-            //Récupère l'id de la personne préalablement connecter
-            int id = GetLoggedInUserId();
-
-
-            if (user is not null && user.EstValid == false)
+            try
             {
-                var result = await _projetRepo.Update(id, user);
+                ProjetDTO? user = _projetRepo.ToModelCreate(model);
 
-                if (result is not null)
-                    return Ok(model);
+                //Récupère l'id de la personne préalablement connecter
+                int id = GetLoggedInUserId();
+
+
+                if (user is not null && user.EstValid == false)
+                {
+                    var result = await _projetRepo.Update(id, user);
+
+                    if (result is not null)
+                        return Ok(model);
+                }
+                return BadRequest();
             }
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Une erreur s'est produite lors de la mise à jour d'un projet. Source :" + ex.Source);
+            }
         }
 
 
@@ -155,26 +176,32 @@ namespace LABO_API.Controllers
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)] // ============> ADD MODEL ? GENRE MDP + EMAIL
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(UserDTORegister model)
         {
-            //Récupère l'id de la personne préalablement connecter
-            //int id = GetLoggedInUserId();
-
-            int id = HttpContext.Session.GetInt32("ID") ?? 0;
-
-            if (await _projetRepo.AuthenticateUser(model.Email, model.MotDePasse) && id != 0)
+            try
             {
-                ///récupérer le projet lié a la personne !
-                int idProjet = await _projetRepo.GetIdProjetByIdUser(id);
+                int id = HttpContext.Session.GetInt32("ID") ?? 0;
 
-                if (idProjet != 0)
+                if (await _projetRepo.AuthenticateUser(model.Email, model.MotDePasse) && id != 0)
                 {
-                    bool result = await _projetRepo.Delete(idProjet);
-                    if (result)
-                        return NoContent();
+                    ///récupérer le projet lié a la personne !
+                    int idProjet = await _projetRepo.GetIdProjetByIdUser(id);
+
+                    if (idProjet != 0)
+                    {
+                        bool result = await _projetRepo.Delete(idProjet);
+                        if (result)
+                            return NoContent();
+                    }
                 }
-            }      
-            return BadRequest();
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Une erreur s'est produite lors de la suppresion d'un projet. Source :" + ex.Source);
+            }
         }
 
     }

@@ -9,7 +9,6 @@ namespace LABO_Tools.Filters
     /// Filtre d'action pour extraire l'identifiant de l'utilisateur à partir du jeton JWT.
     /// Stocke ensuite cet identifiant dans les objets HttpContext.Items pour le rendre accessible aux actions ultérieures de la même requête si nécessaire.
     /// </summary>
-
     public class JwtUserIdentifiantFilter : IActionFilter
     {
 
@@ -18,7 +17,6 @@ namespace LABO_Tools.Filters
         /// Elle extrait l'identifiant de l'utilisateur du jeton JWT et le stocke dans HttpContext.Items.
         /// </summary>
         /// <param name="context">Le contexte d'exécution de l'action.</param>
-
         public void OnActionExecuting(ActionExecutingContext context)
         {
             // Extrait l'identifiant de l'utilisateur du jeton JWT

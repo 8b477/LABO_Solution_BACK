@@ -1,6 +1,5 @@
 ﻿using LABO_DAL.DTO;
 using LABO_DAL.Interfaces;
-using LABO_DAL.Repositories;
 using LABO_Tools.Filters;
 using LABO_Tools.Token;
 using Microsoft.AspNetCore.Authorization;
@@ -39,23 +38,30 @@ namespace LABO_API.Controllers
             /// <returns>La liste des utilisateurs.</returns>
             [HttpGet]
             [ProducesResponseType(StatusCodes.Status200OK)]
+            [ProducesResponseType(StatusCodes.Status204NoContent)]
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
+            [ProducesResponseType(StatusCodes.Status500InternalServerError)]
             public async Task<IActionResult> Get()
             {
-                // Test CancellationFilter + Log
-                // await Task.Delay(10000);  // => Simule une longue attente 
-
-                var result = await _UserRepo.Get();
-
-                if (result is not null)
+            #region Test CancellationFilter + Log
+            // await Task.Delay(10000);  // => Simule une longue attente  
+            #endregion
+                try
                 {
-                    // Converti les utilisateurs pour masqué le champ MotDePasse (sans éffacer les datas)
-                    var users = result.Select(u => _UserRepo.ToModelDisplay(u)).ToList();
+                    var result = await _UserRepo.Get();
 
-                    return Ok(users);
-                
+                    if (result is not null)
+                    {
+                        var users = result.Select(u => _UserRepo.ToModelDisplay(u)).ToList();
+                        return Ok(users);
+                    }
+                    return NoContent();
                 }
-            return BadRequest();
+
+                catch (Exception ex)
+                {
+                    return StatusCode(500, "Une erreur s'est produite lors de la récupération des utilisateurs. Source :" + ex.Source);
+                }
             }
 
 
@@ -69,17 +75,24 @@ namespace LABO_API.Controllers
             [HttpPost]
             [ProducesResponseType(StatusCodes.Status201Created)] //--> Test le côté unique de l'email ?
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
-            public async Task<IActionResult?> Post([FromBody] UserDTOCreate model)
+            [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+            public async Task<IActionResult> Post([FromBody] UserDTOCreate model)
             {
-
-            UserDTO? user = _UserRepo.ToModelCreate(model);
-
-                if (user is not null)
+                try
                 {
-                    if (await _UserRepo.Create(user)) 
-                        return CreatedAtAction(nameof(Post), model);
+                    UserDTO? user = _UserRepo.ToModelCreate(model);
+
+                    if (user is not null)
+                    {
+                        if (await _UserRepo.Create(user))
+                            return CreatedAtAction(nameof(Post), model);
+                    }           
                 }
-                return BadRequest();
+                catch (Exception ex)
+                {
+                    return StatusCode(500, "Une erreur s'est produite lors de l'insertion de l'utilisateur. Source :" + ex.Source);
+                }
+            return BadRequest();
             }
 
 
@@ -92,37 +105,37 @@ namespace LABO_API.Controllers
             /// <returns>Retourne un token avec des infos sur l'utilisateur</returns>
             [ProducesResponseType(StatusCodes.Status200OK)]
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
+            [ProducesResponseType(StatusCodes.Status500InternalServerError)]
             [HttpPost(nameof(Logg))]
             public async Task<IActionResult> Logg(UserDTORegister model)
             {
-
-            UserDTO? user = await _UserRepo.Logger(model.Email, model.MotDePasse);
-
-            if(user is not null)
-            {
-
-                //add some data in session
-                HttpContext.Session.SetInt32("ID", user.IDUtilisateur);
-                HttpContext.Session.SetString("Role",user.UserRole);
-
-                int id = HttpContext.Session.GetInt32("ID") ?? 0;
-                string? role = HttpContext.Session.GetString("Role");
-
-
-                if (user.UserRole == "Visiteur")
+                try
                 {
-                    user.UserRole = "Register";
-                    UserDTO? upUser = await _UserRepo.Update(user.IDUtilisateur, user);
+                    UserDTO? user = await _UserRepo.Logger(model.Email, model.MotDePasse);
 
-                    if(upUser is not null)
-                        return new ObjectResult(GenerateTokenHandler.GenerateToken(upUser.IDUtilisateur.ToString(), upUser.UserRole));
+                    if (user is null)
+                        return BadRequest();
+
+                    //add some data in session
+                    HttpContext.Session.SetInt32("ID", user.IDUtilisateur);
+                    HttpContext.Session.SetString("Role", user.UserRole);
+
+                    if (user.UserRole == "Visiteur")
+                    {
+                        user.UserRole = "Register";
+                        UserDTO? upUser = await _UserRepo.Update(user.IDUtilisateur, user);
+
+                        if (upUser is not null)
+                            return new ObjectResult(GenerateTokenHandler.GenerateToken(upUser.IDUtilisateur.ToString(), upUser.UserRole));
+                    }
+
+                    return new ObjectResult(GenerateTokenHandler.GenerateToken(user.IDUtilisateur.ToString(), user.UserRole));
                 }
-
-                return new ObjectResult(GenerateTokenHandler.GenerateToken(user.IDUtilisateur.ToString(), user.UserRole));
+                catch (Exception ex)
+                {
+                    return StatusCode(500, "Une erreur s'est produite lors de la connexion. Source :" + ex.Source);
+                }
             }
 
-            return BadRequest();
-            }
-
+        }
     }
-}

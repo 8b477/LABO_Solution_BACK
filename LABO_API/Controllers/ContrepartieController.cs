@@ -1,6 +1,5 @@
 ﻿using LABO_DAL.DTO;
 using LABO_DAL.Interfaces;
-using LABO_DAL.Repositories;
 using LABO_Tools.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

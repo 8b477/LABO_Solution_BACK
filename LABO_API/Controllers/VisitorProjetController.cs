@@ -1,8 +1,4 @@
-﻿using LABO_DAL.DTO;
-using LABO_DAL.Interfaces;
-using LABO_DAL.Services;
-using LABO_DAL.Services.Interfaces;
-
+﻿using LABO_DAL.Services.Interfaces;
 using LABO_Tools.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +11,7 @@ namespace LABO_API.Controllers
     [ServiceFilter(typeof(CancellationFilter))]
     public class VisitorProjetController : ControllerBase
     {
+
         #region Dependancy injection
 
         #region Fields
@@ -29,6 +26,7 @@ namespace LABO_API.Controllers
         }
 
         #endregion
+
 
 
         /// <summary>
@@ -62,7 +60,6 @@ namespace LABO_API.Controllers
             
             return NoContent();
         }
-
 
 
     }

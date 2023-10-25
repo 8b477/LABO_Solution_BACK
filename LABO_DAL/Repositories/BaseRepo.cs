@@ -117,7 +117,6 @@ namespace LABO_DAL.Repositories
             if (result is null)
                 return null;
 
-
             return ToModelDisplay(result);
         }
 
