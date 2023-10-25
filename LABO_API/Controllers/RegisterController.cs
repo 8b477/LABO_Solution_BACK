@@ -1,6 +1,5 @@
 ﻿using LABO_DAL.DTO;
 using LABO_DAL.Interfaces;
-using LABO_DAL.Repositories;
 using LABO_Tools.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -76,9 +75,10 @@ namespace LABO_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Une erreur s'est produite lors de la récupération des utilisateurs. Source :" + ex.Source);
+                return StatusCode(500, "Une erreur s'est produite lors de la récupération des utilisateurs. Source : " + ex.Source + " Message : " + ex.Message);
             }
         }
+
 
 
 
@@ -109,7 +109,7 @@ namespace LABO_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Une erreur s'est produite lors de la recherche d'un l'utilisateur. Source :" + ex.Source);
+                return StatusCode(500, "Une erreur s'est produite lors de la recherche d'un l'utilisateur. Source : " + ex.Source + " Message : " + ex.Message);
             }
         }
 
@@ -142,7 +142,7 @@ namespace LABO_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Une erreur s'est produite lors de la suppresion d'un l'utilisateur. Source :" + ex.Source);
+                return StatusCode(500, "Une erreur s'est produite lors de la suppresion d'un l'utilisateur. Source : " + ex.Source + " Message : " + ex.Message);
             }
         }
 
@@ -179,7 +179,7 @@ namespace LABO_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Une erreur s'est produite lors de la mise à jour d'un l'utilisateur. Source :" + ex.Source);
+                return StatusCode(500, "Une erreur s'est produite lors de la mise à jour d'un l'utilisateur. Source : " + ex.Source + " Message : " + ex.Message);
             }
         }
 
@@ -212,7 +212,7 @@ namespace LABO_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Une erreur s'est produite lors de l'afficahge d'un profil utilisateur. Source :" + ex.Source);
+                return StatusCode(500, "Une erreur s'est produite lors de l'afficahge d'un profil utilisateur. Source : " + ex.Source + " Message : " + ex.Message);
             }
         }
     }

@@ -56,7 +56,7 @@ namespace LABO_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Une erreur s'est produite lors de la récupération des utilisateurs. Source :" + ex.Source);
+                return StatusCode(500, "Une erreur s'est produite lors de la récupération des utilisateurs. Source : " + ex.Source + " Message : " + ex.Message);
             }
         }
 
@@ -87,7 +87,7 @@ namespace LABO_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Une erreur s'est produite lors de la récupération d'un utilisateur par son id. Source :" + ex.Source);
+                return StatusCode(500, "Une erreur s'est produite lors de la récupération d'un utilisateur par son id. Source : " + ex.Source + " Message : " + ex.Message);
             }
         }
 
@@ -125,7 +125,7 @@ namespace LABO_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Une erreur s'est produite lors de la suppresion d'un utilisateur. Source :" + ex.Source);
+                return StatusCode(500, "Une erreur s'est produite lors de la suppresion d'un utilisateur. Source : " + ex.Source + " Message : " + ex.Message);
             }
         }
 
@@ -160,7 +160,7 @@ namespace LABO_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Une erreur s'est produite lors de la mise à jour d'un utilisateur. Source :" + ex.Source);
+                return StatusCode(500, "Une erreur s'est produite lors de la mise à jour d'un utilisateur. Source : " + ex.Source + " Message : " + ex.Message);
             }
         }
 
@@ -194,7 +194,7 @@ namespace LABO_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Une erreur s'est produite lors de la récupération du profil. Source :" + ex.Source);
+                return StatusCode(500, "Une erreur s'est produite lors de la récupération du profil. Source : " + ex.Source + " Message : " + ex.Message);
             }
         }
     }

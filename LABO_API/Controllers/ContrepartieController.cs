@@ -13,11 +13,31 @@ namespace LABO_API.Controllers
     public class ContrepartieController : ControllerBase
     {
 
+        #region Constructor
+
+        #region Fields
+
         private readonly IContrepartieRepo _repoContrepartie;
+
+        #endregion
+
 
         public ContrepartieController(IContrepartieRepo repoContrepartie)
         {
             _repoContrepartie = repoContrepartie;
+        }
+
+        #endregion
+
+        private int GetLoggedInUserId()
+        {
+            string? identifiant = HttpContext?.Items["identifiant"]?.ToString();
+
+            if (int.TryParse(identifiant, out int id))
+            {
+                return id;
+            }
+            return 0;
         }
 
 

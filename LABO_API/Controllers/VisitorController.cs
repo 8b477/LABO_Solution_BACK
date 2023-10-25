@@ -60,8 +60,8 @@ namespace LABO_API.Controllers
 
                 catch (Exception ex)
                 {
-                    return StatusCode(500, "Une erreur s'est produite lors de la récupération des utilisateurs. Source :" + ex.Source);
-                }
+                    return StatusCode(500, "Une erreur s'est produite lors de la récupération des utilisateurs. Source : " + ex.Source + " Message : " + ex.Message);
+            }
             }
 
 
@@ -90,8 +90,8 @@ namespace LABO_API.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return StatusCode(500, "Une erreur s'est produite lors de l'insertion de l'utilisateur. Source :" + ex.Source);
-                }
+                    return StatusCode(500, "Une erreur s'est produite lors de l'insertion de l'utilisateur. Source : " + ex.Source + " Message : " + ex.Message);
+            }
             return BadRequest();
             }
 
@@ -133,8 +133,8 @@ namespace LABO_API.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return StatusCode(500, "Une erreur s'est produite lors de la connexion. Source :" + ex.Source);
-                }
+                    return StatusCode(500, "Une erreur s'est produite lors de la connexion. Source : " + ex.Source + " Message : " + ex.Message);
+            }
             }
 
         }

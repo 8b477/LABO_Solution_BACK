@@ -1,6 +1,4 @@
-﻿
-
-namespace LABO_Entities
+﻿namespace LABO_Entities
 {
     public class Participant
     {

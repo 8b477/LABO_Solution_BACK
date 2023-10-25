@@ -55,7 +55,7 @@ namespace LABO_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Une erreur s'est produite lors de la récupération des projets. Source :" + ex.Source);
+                return StatusCode(500, "Une erreur s'est produite lors de la récupération des projets. Source : " + ex.Source + " Message : " + ex.Message);
             }
         }
 
@@ -84,7 +84,7 @@ namespace LABO_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Une erreur s'est produite lors de la récupération d'un projet via son id. Source :" + ex.Source);
+                return StatusCode(500, "Une erreur s'est produite lors de la récupération d'un projet via son id. Source : " + ex.Source + " Message : " + ex.Message);
             }
         }
 
@@ -118,7 +118,7 @@ namespace LABO_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Une erreur s'est produite lors de la mise à jour d'un projet. Source :" + ex.Source);
+                return StatusCode(500, "Une erreur s'est produite lors de la mise à jour d'un projet. Source : " + ex.Source + " Message : " + ex.Message);
             }
         }
 
@@ -147,7 +147,7 @@ namespace LABO_API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Une erreur s'est produite lors de la suppresion du projet par son ID. Source :" + ex.Source);
+                return StatusCode(500, "Une erreur s'est produite lors de la suppresion du projet par son ID. Source : " + ex.Source + " Message : " + ex.Message);
             }
         }
     }

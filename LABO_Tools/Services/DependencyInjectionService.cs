@@ -33,19 +33,40 @@ namespace LABO_Tools.Services
             #region Injection de dependance
 
             #region User
+
             services.AddScoped<IUserRepo, UserRepo>(provider => new UserRepo(new SqlConnection(connectionString)));
+
             #endregion
+
 
             #region Contrepartie
+
             services.AddScoped<IContrepartieRepo, ContrepartieRepo>(provider => new ContrepartieRepo(new SqlConnection(connectionString)));
+
             #endregion
 
+
             #region Projet
+
             services.AddScoped<IProjetService, ProjetService>();
             
             services.AddScoped<IProjetRepo, ProjetRepo>(provider => new ProjetRepo(new SqlConnection(connectionString)));
+
             #endregion
 
+
+            #region Donation
+
+            services.AddScoped<IDonationRepo, DonationRepo>(provider => new DonationRepo(new SqlConnection(connectionString)));
+
+            #endregion
+
+
+            #region Participant
+
+            services.AddScoped<IParticipantRepo, ParticipantRepo>(provider => new ParticipantRepo(new SqlConnection(connectionString)));
+
+            #endregion
             #endregion
 
 
