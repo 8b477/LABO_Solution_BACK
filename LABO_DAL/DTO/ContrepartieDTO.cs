@@ -22,26 +22,21 @@ namespace LABO_DAL.DTO
     {
         [Required]
         [Range(0,1000,ErrorMessage = "Champ requis valeur du montant ne peux pas être inférieur à 0 ni supérieur à 1000$")]
-        [ColumnName(nameof(Montant))]
         public decimal Montant { get; set; }
 
         [Required]
         [MinLength(5, ErrorMessage = "Champ requis, taille minimal attendu : 5")]
         [MaxLength(50, ErrorMessage = "Champ requis, taille maximal attendu : 50")]
-        [ColumnName(nameof(Description))]
         public string Description { get; set; }
     }
 
 
     public class ContrepartiDTOList
     {
-        [ColumnName(nameof(Montant))]
         public decimal Montant { get; set; }
 
-        [ColumnName(nameof(Description))]
         public string Description { get; set; }
 
-        [ColumnName(nameof(IDProjet))]
         public int IDProjet { get; set; }
     }
 }

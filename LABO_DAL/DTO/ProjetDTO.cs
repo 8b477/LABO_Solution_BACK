@@ -42,12 +42,10 @@ namespace LABO_DAL.DTO
         [Required]
         [MinLength(4,ErrorMessage = "Champ requis, 5 cactères minimum attendu pour le Nom du projet")]
         [MaxLength(20,ErrorMessage = "Champ requis, 20 caractères maximum attendu pour le Nom du projet")]
-        [ColumnName(nameof(Nom))]
         public string Nom { get; set; }
 
         [Required]
         [Range(0,20000,ErrorMessage = "Champ requis, le montant ne peux pas être négatif et ne peux être supérieur à 20 000$")]
-        [ColumnName(nameof(Montant))]
         public decimal Montant { get; set; }
 
     }
@@ -58,26 +56,18 @@ namespace LABO_DAL.DTO
     /// </summary>
     public record class ProjetDTOList
     {
-        [ColumnName(nameof(IDProjet))]
         public int IDProjet { get; set; }
 
-        [ColumnName(nameof(Nom))]
         public string Nom { get; set; }
 
-        [ColumnName(nameof(Montant))]
         public decimal Montant { get; set; }
 
-        [ColumnName(nameof(DateCreation))]
         public DateTime DateCreation { get; set; }
 
-        [ColumnName(nameof(DateMiseEnLigne))]
         public DateTime? DateMiseEnLigne { get; set; }
 
-        [ColumnName(nameof(DateDeFin))]
         public DateTime? DateDeFin { get; set; }
 
-
-        [ColumnName(nameof(IDUtilisateur))]
         public int IDUtilisateur { get; set; } // --> FK
     }
 }
