@@ -10,6 +10,7 @@ namespace LABO_API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ServiceFilter(typeof(CancellationFilter))]
+    [ServiceFilter(typeof(JwtUserIdentifiantFilter))]
     [Authorize("RequireAdminRole")]
     public class AdminController : ControllerBase
     {
@@ -173,7 +174,6 @@ namespace LABO_API.Controllers
         /// <returns>Retourne le profil de l'utilisateur sous forme de UserDTO</returns>
         [ServiceFilter(typeof(JwtUserIdentifiantFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("Profil")]

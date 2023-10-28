@@ -89,8 +89,8 @@ namespace LABO_API.Controllers
                     }           
                 }
                 catch (Exception ex)
-                {
-                    return StatusCode(500, "Une erreur s'est produite lors de l'insertion de l'utilisateur. Source : " + ex.Source + " Message : " + ex.Message);
+                {   // TD : capture error db perso
+                    return StatusCode(500, "Une erreur s'est produite lors de l'insertion de l'utilisateur. " + ex.Message);
             }
             return BadRequest();
             }
@@ -134,7 +134,7 @@ namespace LABO_API.Controllers
                 catch (Exception ex)
                 {
                     return StatusCode(500, "Une erreur s'est produite lors de la connexion. Source : " + ex.Source + " Message : " + ex.Message);
-            }
+                }
             }
 
         }

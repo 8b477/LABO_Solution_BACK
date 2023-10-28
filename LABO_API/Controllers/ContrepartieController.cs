@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LABO_API.Controllers
 {
     [Route("api/[controller]")]
-    [ServiceFilter(typeof(CancellationFilter))]
+    [ServiceFilter(typeof(CancellationFilter))] // -> check si une contrepartie avec le meme nnom existe déjà en DB
     [Authorize("RequireRegisterRole")]
     [ApiController]
     public class ContrepartieController : ControllerBase

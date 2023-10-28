@@ -19,5 +19,6 @@ namespace LABO_DAL.Interfaces
         ProjetDTO? ToModelCreate(ProjetDTOCreate model);
 
         ProjetDTOList? ToModelDisplay(ProjetDTO model);
+
     }
 }

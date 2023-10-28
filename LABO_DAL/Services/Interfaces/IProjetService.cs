@@ -8,5 +8,6 @@ namespace LABO_DAL.Services.Interfaces
         Task<IEnumerable<object>> GetProjetDetails(string nameOfProject);
 
         Task<IEnumerable<object>> GetAllProjetDetails(int page, int pageSize);
+
     }
 }

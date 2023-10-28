@@ -10,6 +10,7 @@ namespace LABO_API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ServiceFilter(typeof(CancellationFilter))]
+    [ServiceFilter(typeof(JwtUserIdentifiantFilter))]
     [Authorize("RequireRegisterRole")]
     public class RegisterController : ControllerBase
     {
@@ -45,40 +46,6 @@ namespace LABO_API.Controllers
 
             return 0;
         }
-
-
-
-        /// <summary>
-        /// Récupère la liste des utilisateurs.
-        /// </summary>
-        /// <returns>La liste des utilisateurs.</returns>
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Get()
-        {
-            try
-            {
-                var result = await _userRepo.Get();
-
-                if (result is not null)
-                {
-                    // Converti les utilisateurs pour masqué le champ MotDePasse (sans éffacer les datas)
-                    var users = result.Select(u => _userRepo.ToModelDisplay(u)).ToList();
-
-                    return Ok(users);
-
-                }
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Une erreur s'est produite lors de la récupération des utilisateurs. Source : " + ex.Source + " Message : " + ex.Message);
-            }
-        }
-
 
 
 
@@ -190,7 +157,6 @@ namespace LABO_API.Controllers
         /// Permet d'accéder à son profil personnel quand si l'utilisateur est connecté.
         /// </summary>
         /// <returns>Retourne le profil de l'utilisateur sous forme de UserDTO</returns>
-        [ServiceFilter(typeof(JwtUserIdentifiantFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

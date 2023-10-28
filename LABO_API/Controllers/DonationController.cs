@@ -8,6 +8,7 @@ namespace LABO_API.Controllers
 {
     [Route("api/[controller]")]
     [ServiceFilter(typeof(CancellationFilter))]
+    [ServiceFilter(typeof(JwtUserIdentifiantFilter))]
     [Authorize("RequireRegisterRole")]
     [ApiController]
     public class DonationController : ControllerBase

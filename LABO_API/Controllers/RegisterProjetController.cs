@@ -1,6 +1,5 @@
 ﻿using LABO_DAL.DTO;
 using LABO_DAL.Interfaces;
-using LABO_DAL.Repositories;
 using LABO_Tools.Filters;
 
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +10,7 @@ namespace LABO_API.Controllers
 {
     [Route("api/[controller]")]
     [ServiceFilter(typeof(CancellationFilter))]
+    [ServiceFilter(typeof(JwtUserIdentifiantFilter))]
     [Authorize("RequireRegisterRole")]
     [ApiController]
     public class RegisterProjetController : ControllerBase
@@ -64,12 +64,30 @@ namespace LABO_API.Controllers
         {
             try
             {
-                var result = await _projetRepo.Get();
+                //Récupère l'id de la personne préalablement connecter
+                int id = GetLoggedInUserId();
 
-                if (result is not null)
+                int idProjet = await _projetRepo.GetIdProjetByIdUser(id);
+
+                if (idProjet != 0)
                 {
-                    var user = result.Select(x => _projetRepo.ToModelDisplay(x));
-                    return Ok(result);
+                    ProjetDTOList? modelProjet = await _projetRepo.GetById(idProjet);
+
+                    if (modelProjet is not null)
+                    {
+                        ProjetDTO projet = new()
+                        {
+                            IDProjet = idProjet,
+                            IDUtilisateur = id,
+                            Nom = modelProjet.Nom,
+                            Montant = modelProjet.Montant,
+                            DateCreation = modelProjet.DateCreation,
+                            DateMiseEnLigne = modelProjet.DateMiseEnLigne,
+                            DateDeFin = modelProjet.DateDeFin
+                        };
+
+                        return Ok(projet);
+                    }
                 }
                 return NoContent();
             }

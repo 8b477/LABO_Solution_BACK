@@ -9,6 +9,7 @@ namespace LABO_API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ServiceFilter(typeof(CancellationFilter))]
+    [ServiceFilter(typeof(JwtUserIdentifiantFilter))]
     [Authorize("RequireAdminRole")]
     public class AdminProjetController : ControllerBase
     {
