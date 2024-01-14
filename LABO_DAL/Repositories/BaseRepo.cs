@@ -1,8 +1,7 @@
 ﻿#region USING
 using Dapper;
 using LABO_DAL.Interfaces;
-
-
+using LABO_Tools.CustomError.ExtensionCustomError;
 using System.Data;
 using System.Reflection; 
 #endregion
@@ -46,20 +45,16 @@ namespace LABO_DAL.Repositories
         /// <returns>Une liste d'objets de type M.</returns>
         public async Task<IEnumerable<M>> Get()
         {
-            // Utilise la Reflection pour obtenir les noms de colonnes à partir des attributs
-            var columnNames = typeof(T)
-                .GetProperties()
-                .Select(property =>
-                {
-                    var attribute = property.GetCustomAttribute<ColumnNameAttribute>();
-                    return attribute?.Name ?? property.Name;
-                });
 
-            string columns = string.Join(", ", columnNames);
-            string query = $"SELECT {columns} FROM {GetTableName()}";
+                // Utilise la Reflection pour obtenir les noms de colonnes à partir des attributs
+                //var columnNames = GetColumnNames();
 
-            var result = await _connection.QueryAsync<M>(query);
-            return result;
+                //string columns = string.Join(", ", columnNames);
+                string query = $"SELECT * FROM {GetTableName()}";
+
+                var result = await _connection.QueryAsync<M>(query);  // ->MAYBE mauvaise querie? : ex
+
+            return result;           
         }
 
 
@@ -69,18 +64,35 @@ namespace LABO_DAL.Repositories
         /// </summary>
         /// <param name="item">Objet de type M à insérer dans la base de données.</param>
         /// <returns>True si l'opération a réussi, sinon False.</returns>
-        public async Task<bool> Create(M item)
+        public async Task<bool> Create(MC item)
         {
             string tableName = GetTableName();
-            var propertyDict = GetPropertyDictionary(item);
+            var propertyDict = GetPropertyDictionary(item); // changer par un model create
 
             // Exclue la colonne identité de la mise à jour ID + nom de la table (convention perso)
-            propertyDict.Remove($"ID{tableName}");
+            //propertyDict.Remove($"ID{tableName}");
 
             string columns = string.Join(", ", propertyDict.Keys);
             string values = string.Join(", ", propertyDict.Keys.Select(k => "@" + k));
             string query = $"INSERT INTO {tableName} ({columns}) VALUES ({values})";
-            int rowAffected =  await _connection.ExecuteAsync(query, item);
+            int rowAffected =  await _connection.ExecuteAsync(query, item); // ->MAYBE mauvaise querie? : ex
+
+            return rowAffected > 0;
+        }
+
+
+        public async Task<bool> Create(M item)
+        {
+            string tableName = GetTableName();
+            var propertyDict = GetPropertyDictionary(item); // changer par un model create
+
+            // Exclue la colonne identité de la mise à jour ID + nom de la table (convention perso)
+            //propertyDict.Remove($"ID{tableName}");
+
+            string columns = string.Join(", ", propertyDict.Keys);
+            string values = string.Join(", ", propertyDict.Keys.Select(k => "@" + k));
+            string query = $"INSERT INTO {tableName} ({columns}) VALUES ({values})";
+            int rowAffected = await _connection.ExecuteAsync(query, item); // ->MAYBE mauvaise querie? : ex
 
             return rowAffected > 0;
         }
@@ -214,12 +226,37 @@ namespace LABO_DAL.Repositories
 
 
         // Méthode pour obtenir un dictionnaire de propriétés et valeurs de l'objet modèle
+        private Dictionary<string, object?> GetPropertyDictionary(MC item)
+        {
+            return typeof(MC)
+                .GetProperties()
+                .ToDictionary(property => property.Name, property => property.GetValue(item));
+        }
+
+
+        // Méthode pour obtenir un dictionnaire de propriétés et valeurs de l'objet modèle
         private Dictionary<string, object?> GetPropertyDictionary(M item)
         {
             return typeof(M)
                 .GetProperties()
                 .ToDictionary(property => property.Name, property => property.GetValue(item));
         }
+
+
+
+
+        //private IEnumerable<string> GetColumnNames()
+        //{
+        //    // Utilise la Reflection pour obtenir les noms de colonnes à partir des attributs
+        //    return typeof(T)
+        //        .GetProperties()
+        //        .Select(property =>
+        //        {
+        //            var attribute = property.GetCustomAttribute<LABO_Entities.ColumnNameAttribute>();
+        //            return attribute?.Name ?? property.Name; 
+        //            //si un [ColumnName("")] prend le nom si non, prend le nom de la prop
+        //        });
+        //}
 
         #endregion
 

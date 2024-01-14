@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LABO_BLL\LABO_BLL.csproj" />
     <ProjectReference Include="..\LABO_Entities\LABO_Entities.csproj" />
   </ItemGroup>
 

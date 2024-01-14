@@ -61,7 +61,7 @@ namespace LABO_API.Controllers
                 catch (Exception ex)
                 {
                     return StatusCode(500, "Une erreur s'est produite lors de la récupération des utilisateurs. Source : " + ex.Source + " Message : " + ex.Message);
-            }
+                }
             }
 
 
@@ -80,19 +80,19 @@ namespace LABO_API.Controllers
             {
                 try
                 {
-                    UserDTO? user = _UserRepo.ToModelCreate(model);
+                   // UserDTO? user = _UserRepo.ToModelCreate(model);
 
-                    if (user is not null)
+                    if (model is not null)
                     {
-                        if (await _UserRepo.Create(user))
+                        if (await _UserRepo.Create(model))
                             return CreatedAtAction(nameof(Post), model);
                     }           
                 }
                 catch (Exception ex)
                 {   // TD : capture error db perso
                     return StatusCode(500, "Une erreur s'est produite lors de l'insertion de l'utilisateur. " + ex.Message);
-            }
-            return BadRequest();
+                }
+                return BadRequest();
             }
 
 

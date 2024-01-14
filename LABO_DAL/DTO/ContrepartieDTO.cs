@@ -4,16 +4,13 @@ namespace LABO_DAL.DTO
 {
     public class ContrepartieDTO
     {
-        [ColumnName(nameof(IDContrepartie))]
+
         public int IDContrepartie { get; set; }
 
-        [ColumnName(nameof(Montant))]
         public decimal Montant { get; set; }
 
-        [ColumnName(nameof(Description))]
         public string Description { get; set; }
 
-        [ColumnName(nameof(IDProjet))]
         public int IDProjet { get; set; }
     }
 

@@ -29,7 +29,6 @@ namespace LABO_Tools.Filters
         /// et un message spécifique.
         /// </summary>
         /// <param name="context">Le contexte de l'exécution de l'action.</param>
-
         public void OnActionExecuted(ActionExecutedContext context)
         {
             // Vérifie si la requête a été annulée par le client

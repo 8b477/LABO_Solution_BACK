@@ -1,5 +1,5 @@
 ﻿
-namespace LABO_DAL
+namespace LABO_Entities
 {
     /// <summary>
     /// Un attribut personnalisé utilisé pour spécifier le nom d'une colonne associée à une propriété.
@@ -7,7 +7,7 @@ namespace LABO_DAL
     /// </summary>
 
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    sealed class ColumnNameAttribute : Attribute
+    public class ColumnNameAttribute : Attribute
     {
 
         public string Name { get; }

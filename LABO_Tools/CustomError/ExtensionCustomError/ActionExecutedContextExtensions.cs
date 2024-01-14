@@ -17,7 +17,8 @@ namespace LABO_Tools.CustomError.ExtensionCustomError
         /// <param name="details">Des détails optionnels supplémentaires concernant l'erreur.</param>
         public static void HandleCustomError(this ActionExecutedContext context, int errorCode, string errorMessage, string details = "")
         {
-            var customError = new ModelError(errorCode, errorMessage, details);
+            ModelError customError = new (errorCode, errorMessage, details);
+
             context.Result = new ObjectResult(customError)
             {
                 StatusCode = StatusCodes.Status500InternalServerError

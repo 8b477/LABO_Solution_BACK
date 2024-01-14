@@ -5,13 +5,10 @@ namespace LABO_DAL.DTO
 {
     public class ParticipantDTO
     {
-        [ColumnName(nameof(IDUtilisateur))]
         public int IDUtilisateur { get; set; } // --> FK
 
-        [ColumnName(nameof(IDContrepartie))]
         public int IDContrepartie { get; set; } // --> FK
 
-        [ColumnName(nameof(DateParticipation))]
         public DateTime DateParticipation { get; set; }
     }
 

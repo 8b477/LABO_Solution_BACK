@@ -8,28 +8,20 @@ namespace LABO_DAL.DTO
     /// </summary>
     public record class ProjetDTO
     {
-        [ColumnName(nameof(IDProjet))]
         public int IDProjet { get; set; }
 
-        [ColumnName(nameof(Nom))]
         public string Nom { get; set; }
 
-        [ColumnName(nameof(Montant))]
         public decimal Montant { get; set; }
 
-        [ColumnName(nameof(DateCreation))]
         public DateTime DateCreation { get; set; }
 
-        [ColumnName(nameof(DateMiseEnLigne))]
         public DateTime? DateMiseEnLigne { get; set; } = null;
 
-        [ColumnName(nameof(DateDeFin))]
         public DateTime? DateDeFin { get; set; } = null;
 
-        [ColumnName(nameof(EstValid))] // --> Passe à valide quand 3 contrepartie son lié au projet
         public bool EstValid { get; set; } = false;
 
-        [ColumnName(nameof(IDUtilisateur))]
         public int IDUtilisateur { get; set; } // --> FK
     }
 

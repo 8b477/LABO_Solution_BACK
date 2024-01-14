@@ -26,7 +26,7 @@ namespace LABO_DAL.Interfaces
         /// <param name="item">Le modèle de données de base à créer.</param>
         /// <returns>Une tâche qui représente l'opération de création.</returns>
         Task<bool> Create(M item);
-
+        Task<bool> Create(MC item);
 
         /// <summary>
         /// Récupère tous les éléments en utilisant le modèle de données de base.
